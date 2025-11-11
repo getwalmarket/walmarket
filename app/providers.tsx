@@ -16,7 +16,21 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networks} defaultNetwork="testnet">
-        <WalletProvider autoConnect>
+        <WalletProvider
+          autoConnect
+          // Preferred wallets appear first in the connection modal
+          // This ensures mobile wallets like Slush are prominently displayed
+          preferredWallets={[
+            'Sui Wallet',
+            'Slush',
+            'Suiet',
+            'Ethos Wallet',
+            'Morphis Wallet',
+            'Glass Wallet',
+          ]}
+          // Enable all wallet standard wallets
+          enableUnsafeBurner={false}
+        >
           {children}
         </WalletProvider>
       </SuiClientProvider>
