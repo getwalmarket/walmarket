@@ -1,8 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import Image from "next/image";
-import { WalletButton } from "../components/WalletButton";
+import { Header } from "../components/Header";
 
 // Mock data for demonstration - will be replaced with actual blockchain data
 const MOCK_MARKETS = [
@@ -91,22 +90,7 @@ const CATEGORIES = ['All', 'Crypto', 'Technology', 'DeFi', 'Politics', 'Infrastr
 export default function MarketsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50">
-      {/* Header */}
-      <header className="border-b-4 border-orange-400 bg-white/90 backdrop-blur-sm sticky top-0 z-10 shadow-[0_4px_0px_0px_rgba(251,146,60,0.3)]">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-          <Link href="/">
-            <Image
-              src="/no-bg-txt.png"
-              alt="Walmarket Logo"
-              width={1024}
-              height={576}
-              priority
-              className="h-16 md:h-20 w-auto cursor-pointer"
-            />
-          </Link>
-          <WalletButton />
-        </div>
-      </header>
+      <Header />
 
       <main className="max-w-7xl mx-auto px-6 py-12">
         {/* Page Header */}
