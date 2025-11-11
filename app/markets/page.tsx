@@ -16,8 +16,6 @@ const MOCK_MARKETS = [
     noPrice: 0.35,
     endDate: '2025-12-31',
     participants: 1247,
-    aiPrediction: 0.58,
-    aiConfidence: 0.73,
   },
   {
     id: '2',
@@ -29,8 +27,6 @@ const MOCK_MARKETS = [
     noPrice: 0.18,
     endDate: '2025-06-30',
     participants: 892,
-    aiPrediction: 0.88,
-    aiConfidence: 0.91,
   },
   {
     id: '3',
@@ -42,8 +38,6 @@ const MOCK_MARKETS = [
     noPrice: 0.42,
     endDate: '2026-01-01',
     participants: 654,
-    aiPrediction: 0.62,
-    aiConfidence: 0.68,
   },
   {
     id: '4',
@@ -55,8 +49,6 @@ const MOCK_MARKETS = [
     noPrice: 0.29,
     endDate: '2025-12-31',
     participants: 1532,
-    aiPrediction: 0.67,
-    aiConfidence: 0.79,
   },
   {
     id: '5',
@@ -68,8 +60,6 @@ const MOCK_MARKETS = [
     noPrice: 0.58,
     endDate: '2025-12-31',
     participants: 478,
-    aiPrediction: 0.38,
-    aiConfidence: 0.64,
   },
   {
     id: '6',
@@ -81,8 +71,6 @@ const MOCK_MARKETS = [
     noPrice: 0.45,
     endDate: '2025-12-31',
     participants: 321,
-    aiPrediction: 0.51,
-    aiConfidence: 0.72,
   },
 ];
 
@@ -119,7 +107,7 @@ export default function MarketsPage() {
         </div>
 
         {/* Stats Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-xl shadow-sm border-2 border-orange-200">
             <div className="text-sm text-gray-600 mb-1">Total Markets</div>
             <div className="text-3xl font-bold text-gray-900">{MOCK_MARKETS.length}</div>
@@ -131,10 +119,6 @@ export default function MarketsPage() {
           <div className="bg-white p-6 rounded-xl shadow-sm border-2 border-orange-200">
             <div className="text-sm text-gray-600 mb-1">Active Traders</div>
             <div className="text-3xl font-bold text-gray-900">5,124</div>
-          </div>
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-xl shadow-sm border-2 border-purple-700">
-            <div className="text-sm text-white/90 mb-1">🤖 AI Oracle Win Rate</div>
-            <div className="text-3xl font-bold text-white">87.3%</div>
           </div>
         </div>
 
@@ -187,28 +171,6 @@ export default function MarketsPage() {
                     <div className="text-sm text-gray-600 mb-1">Ends</div>
                     <div className="text-sm font-medium text-gray-900">
                       {new Date(market.endDate).toLocaleDateString()}
-                    </div>
-                  </div>
-                </div>
-
-                {/* AI Prediction */}
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-3 rounded border-2 border-blue-200">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">🤖</span>
-                      <div>
-                        <div className="text-xs font-bold text-blue-900">AI Prediction</div>
-                        <div className="text-sm font-semibold text-blue-700">
-                          YES: {(market.aiPrediction * 100).toFixed(0)}% • Confidence: {(market.aiConfidence * 100).toFixed(0)}%
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`text-xs font-bold px-2 py-1 rounded ${
-                      market.aiConfidence > 0.8 ? 'bg-green-200 text-green-800' :
-                      market.aiConfidence > 0.6 ? 'bg-yellow-200 text-yellow-800' :
-                      'bg-orange-200 text-orange-800'
-                    }`}>
-                      {market.aiConfidence > 0.8 ? 'HIGH' : market.aiConfidence > 0.6 ? 'MEDIUM' : 'LOW'}
                     </div>
                   </div>
                 </div>
