@@ -81,13 +81,17 @@ Walmarket is the **world's first verifiable AI oracle** for prediction markets, 
 
 ### 3. Wallet Integration
 - **Supported Wallets**:
-  - Phantom Wallet
   - Sui Wallet
+  - Suiet Wallet
   - Ethos Wallet
+  - Slush Wallet
+  - Morphis Wallet
+  - Glass Wallet
   - All wallets compatible with @mysten/dapp-kit
 - One-click connection
 - Secure transaction signing
 - Address display with truncation
+- Automatic wallet detection
 
 ### 4. Walrus Storage Integration
 - **Evidence Bundle Storage**: Complete AI oracle reports (input, output, prompts, schemas, reasoning)
