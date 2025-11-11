@@ -8,6 +8,15 @@ This directory contains the on-chain logic for Walmarket's decentralized predict
 
 ## Contract Structure
 
+### `usdt.move`
+
+Test USDT token contract for Walmarket prediction markets.
+
+- **Token Creation**: Creates a test USDT token with 6 decimals (matching real USDT)
+- **Minting**: Treasury cap holder can mint tokens to any address
+- **Burning**: Tokens can be burned to reduce supply
+- **Metadata**: Includes token name, symbol, description, and icon URL
+
 ### `market.move`
 
 The main prediction market contract that handles:
@@ -84,7 +93,39 @@ sui move test
 
 ### Deploy
 
-Deploy to SUI testnet:
+#### Deploy USDT Token
+
+First, deploy the test USDT token:
+```bash
+cd contracts
+./scripts/deploy_usdt.sh
+```
+
+This will:
+1. Build and deploy the USDT token contract
+2. Display the Package ID and Treasury Cap ID
+3. Provide instructions for minting tokens
+
+#### Mint USDT Tokens
+
+After deployment, mint test USDT tokens to your address:
+```bash
+# Mint 1000 USDT (1000000000 = 1000 * 10^6)
+./scripts/mint_usdt.sh <TREASURY_CAP_ID> 1000000000 $(sui client active-address)
+
+# Or use the environment variable
+export PACKAGE_ID=<your_package_id>
+./scripts/mint_usdt.sh <TREASURY_CAP_ID> 1000000000 $(sui client active-address)
+```
+
+**Note:** USDT uses 6 decimals, so:
+- 1 USDT = 1,000,000 (1e6)
+- 10 USDT = 10,000,000 (1e7)
+- 1,000 USDT = 1,000,000,000 (1e9)
+
+#### Deploy Market Contract
+
+Deploy the prediction market contract:
 ```bash
 sui client publish --gas-budget 100000000
 ```
@@ -93,7 +134,35 @@ After deployment, save the package ID and update your frontend configuration.
 
 ## Contract Functions
 
-### Public Entry Functions
+### USDT Token Functions
+
+#### `mint`
+Mint new USDT tokens to a recipient address.
+
+**Parameters:**
+- `treasury: &mut TreasuryCap<USDT>` - Treasury capability (only holder can call)
+- `amount: u64` - Amount to mint (in smallest unit, 6 decimals)
+- `recipient: address` - Address to receive the tokens
+- `ctx: &mut TxContext` - Transaction context
+
+**Usage:**
+```bash
+sui client call \
+    --package <PACKAGE_ID> \
+    --module usdt \
+    --function mint \
+    --args <TREASURY_CAP_ID> 1000000000 <RECIPIENT_ADDRESS> \
+    --gas-budget 10000000
+```
+
+#### `burn`
+Burn USDT tokens to reduce supply.
+
+**Parameters:**
+- `treasury: &mut TreasuryCap<USDT>` - Treasury capability
+- `coin: Coin<USDT>` - USDT coin to burn
+
+### Market Contract Functions
 
 #### `create_market`
 Create a new prediction market.
