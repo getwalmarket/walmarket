@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 
@@ -11,7 +12,7 @@ const MOCK_MARKETS = [
     title: 'Will Bitcoin reach $150,000 by end of 2025?',
     description: 'Market resolves based on CoinGecko closing price on December 31, 2025',
     category: 'Crypto',
-    totalVolume: '45,200 SUI',
+    totalVolume: '45,200 USDT',
     yesPrice: 0.65,
     noPrice: 0.35,
     endDate: '2025-12-31',
@@ -22,7 +23,7 @@ const MOCK_MARKETS = [
     title: 'Will Ethereum complete the merge to Proof of Stake by Q2 2025?',
     description: 'Market resolves when official Ethereum Foundation confirms completion',
     category: 'Crypto',
-    totalVolume: '32,100 SUI',
+    totalVolume: '32,100 USDT',
     yesPrice: 0.82,
     noPrice: 0.18,
     endDate: '2025-06-30',
@@ -33,7 +34,7 @@ const MOCK_MARKETS = [
     title: 'Will AI-generated content exceed 50% of web content by 2026?',
     description: 'Based on analysis from major web analytics providers',
     category: 'Technology',
-    totalVolume: '28,900 SUI',
+    totalVolume: '28,900 USDT',
     yesPrice: 0.58,
     noPrice: 0.42,
     endDate: '2026-01-01',
@@ -44,7 +45,7 @@ const MOCK_MARKETS = [
     title: 'Will SUI TVL exceed $5B in 2025?',
     description: 'Total Value Locked across SUI ecosystem as reported by DefiLlama',
     category: 'DeFi',
-    totalVolume: '51,300 SUI',
+    totalVolume: '51,300 USDT',
     yesPrice: 0.71,
     noPrice: 0.29,
     endDate: '2025-12-31',
@@ -55,7 +56,7 @@ const MOCK_MARKETS = [
     title: 'Will any country adopt Bitcoin as legal tender in 2025?',
     description: 'Market resolves YES if official government announcement is made',
     category: 'Politics',
-    totalVolume: '19,400 SUI',
+    totalVolume: '19,400 USDT',
     yesPrice: 0.42,
     noPrice: 0.58,
     endDate: '2025-12-31',
@@ -66,7 +67,7 @@ const MOCK_MARKETS = [
     title: 'Will Walrus storage exceed 1PB of data by end of 2025?',
     description: 'Based on official Walrus network statistics',
     category: 'Infrastructure',
-    totalVolume: '15,700 SUI',
+    totalVolume: '15,700 USDT',
     yesPrice: 0.55,
     noPrice: 0.45,
     endDate: '2025-12-31',
@@ -114,7 +115,10 @@ export default function MarketsPage() {
           </div>
           <div className="bg-white p-6 rounded-xl shadow-sm border-2 border-orange-200">
             <div className="text-sm text-gray-600 mb-1">Total Volume</div>
-            <div className="text-3xl font-bold text-gray-900">192,700 SUI</div>
+            <div className="flex items-center gap-2">
+              <Image src="/usdt.png" alt="USDT" width={32} height={32} className="w-8 h-8" />
+              <div className="text-3xl font-bold text-gray-900">192,700</div>
+            </div>
           </div>
           <div className="bg-white p-6 rounded-xl shadow-sm border-2 border-orange-200">
             <div className="text-sm text-gray-600 mb-1">Active Traders</div>
@@ -162,8 +166,11 @@ export default function MarketsPage() {
                     </div>
                     <div>
                       <div className="text-sm text-gray-600 mb-1">Volume</div>
-                      <div className="text-lg font-semibold text-gray-900">
-                        {market.totalVolume}
+                      <div className="flex items-center gap-1.5">
+                        <Image src="/usdt.png" alt="USDT" width={20} height={20} className="w-5 h-5" />
+                        <div className="text-lg font-semibold text-gray-900">
+                          {market.totalVolume.replace(' USDT', '')}
+                        </div>
                       </div>
                     </div>
                   </div>

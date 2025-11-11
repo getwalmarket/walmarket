@@ -2,6 +2,7 @@
 
 import { use, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "../../components/Header";
 import { WalletButton } from "../../components/WalletButton";
 import { Footer } from "../../components/Footer";
@@ -15,7 +16,7 @@ const MOCK_MARKETS = [
     description: 'Market resolves based on CoinGecko closing price on December 31, 2025',
     longDescription: 'This market will resolve to YES if Bitcoin (BTC) reaches or exceeds $150,000 USD on CoinGecko at any point before 11:59 PM UTC on December 31, 2025. The resolution will be based on the highest price recorded during this period.',
     category: 'Crypto',
-    totalVolume: '45,200 SUI',
+    totalVolume: '45,200 USDT',
     yesPrice: 0.65,
     noPrice: 0.35,
     endDate: '2025-12-31',
@@ -29,7 +30,7 @@ const MOCK_MARKETS = [
     description: 'Market resolves when official Ethereum Foundation confirms completion',
     longDescription: 'This prediction market focuses on whether Ethereum will successfully complete its transition to Proof of Stake (PoS) consensus mechanism by the end of Q2 2025. Resolution requires official confirmation from the Ethereum Foundation.',
     category: 'Crypto',
-    totalVolume: '32,100 SUI',
+    totalVolume: '32,100 USDT',
     yesPrice: 0.82,
     noPrice: 0.18,
     endDate: '2025-06-30',
@@ -43,7 +44,7 @@ const MOCK_MARKETS = [
     description: 'Based on analysis from major web analytics providers',
     longDescription: 'This market will resolve based on comprehensive studies from leading web analytics providers (e.g., SimilarWeb, Alexa) that measure the proportion of AI-generated content on the public web.',
     category: 'Technology',
-    totalVolume: '28,900 SUI',
+    totalVolume: '28,900 USDT',
     yesPrice: 0.58,
     noPrice: 0.42,
     endDate: '2026-01-01',
@@ -57,7 +58,7 @@ const MOCK_MARKETS = [
     description: 'Total Value Locked across SUI ecosystem as reported by DefiLlama',
     longDescription: 'This market tracks whether the SUI blockchain ecosystem will achieve a Total Value Locked (TVL) of $5 billion or more by the end of 2025, as measured by DefiLlama.',
     category: 'DeFi',
-    totalVolume: '51,300 SUI',
+    totalVolume: '51,300 USDT',
     yesPrice: 0.71,
     noPrice: 0.29,
     endDate: '2025-12-31',
@@ -71,7 +72,7 @@ const MOCK_MARKETS = [
     description: 'Market resolves YES if official government announcement is made',
     longDescription: 'This market will resolve to YES if any sovereign nation officially adopts Bitcoin as legal tender in 2025, following El Salvador\'s example. The adoption must be confirmed through official government channels.',
     category: 'Politics',
-    totalVolume: '19,400 SUI',
+    totalVolume: '19,400 USDT',
     yesPrice: 0.42,
     noPrice: 0.58,
     endDate: '2025-12-31',
@@ -85,7 +86,7 @@ const MOCK_MARKETS = [
     description: 'Based on official Walrus network statistics',
     longDescription: 'This market predicts whether the Walrus decentralized storage network will store more than 1 Petabyte (1PB) of data by December 31, 2025, based on official network statistics.',
     category: 'Infrastructure',
-    totalVolume: '15,700 SUI',
+    totalVolume: '15,700 USDT',
     yesPrice: 0.55,
     noPrice: 0.45,
     endDate: '2025-12-31',
@@ -126,7 +127,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
       return;
     }
     // This will be replaced with actual blockchain transaction
-    alert(`Placing ${betAmount} SUI on ${selectedOutcome.toUpperCase()}`);
+    alert(`Placing ${betAmount} USDT on ${selectedOutcome.toUpperCase()}`);
   };
 
   return (
@@ -163,7 +164,10 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
               <div className="grid grid-cols-3 gap-4 pt-6 border-t">
                 <div>
                   <div className="text-sm text-gray-600 mb-1">Total Volume</div>
-                  <div className="text-xl font-bold">{market.totalVolume}</div>
+                  <div className="flex items-center gap-1.5">
+                    <Image src="/usdt.png" alt="USDT" width={24} height={24} className="w-6 h-6" />
+                    <div className="text-xl font-bold">{market.totalVolume.replace(' USDT', '')}</div>
+                  </div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-600 mb-1">Participants</div>
@@ -187,8 +191,9 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
                   <div className="text-4xl font-bold text-green-600 mb-2">
                     {(market.yesPrice * 100).toFixed(1)}%
                   </div>
-                  <div className="text-sm text-gray-600">
-                    {market.yesPrice.toFixed(2)} SUI per share
+                  <div className="flex items-center gap-1 text-sm text-gray-600">
+                    <Image src="/usdt.png" alt="USDT" width={16} height={16} className="w-4 h-4" />
+                    <span>{market.yesPrice.toFixed(2)} per share</span>
                   </div>
                 </div>
                 <div className="border-2 border-red-200 rounded-xl p-6 bg-red-50">
@@ -196,8 +201,9 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
                   <div className="text-4xl font-bold text-red-600 mb-2">
                     {(market.noPrice * 100).toFixed(1)}%
                   </div>
-                  <div className="text-sm text-gray-600">
-                    {market.noPrice.toFixed(2)} SUI per share
+                  <div className="flex items-center gap-1 text-sm text-gray-600">
+                    <Image src="/usdt.png" alt="USDT" width={16} height={16} className="w-4 h-4" />
+                    <span>{market.noPrice.toFixed(2)} per share</span>
                   </div>
                 </div>
               </div>
@@ -264,8 +270,9 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
 
                   {/* Amount Input */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Amount (SUI)
+                    <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-2">
+                      <span>Amount</span>
+                      <Image src="/usdt.png" alt="USDT" width={16} height={16} className="w-4 h-4" />
                     </label>
                     <input
                       type="number"
@@ -287,9 +294,12 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Potential Return</span>
-                        <span className="font-semibold text-green-600">
-                          {(parseFloat(betAmount) / (selectedOutcome === 'yes' ? market.yesPrice : market.noPrice)).toFixed(2)} SUI
-                        </span>
+                        <div className="flex items-center gap-1">
+                          <Image src="/usdt.png" alt="USDT" width={16} height={16} className="w-4 h-4" />
+                          <span className="font-semibold text-green-600">
+                            {(parseFloat(betAmount) / (selectedOutcome === 'yes' ? market.yesPrice : market.noPrice)).toFixed(2)}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   )}
