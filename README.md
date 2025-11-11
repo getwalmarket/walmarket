@@ -200,6 +200,23 @@ sui client publish --gas-budget 100000000
 
 ---
 
+## 🪝 Git Hooks
+
+This project uses [Husky](https://typicode.github.io/husky/) to ensure code quality before commits and pushes.
+
+### Pre-commit Hook
+Automatically runs before each commit:
+- **Lint check**: Validates code style with ESLint
+
+### Pre-push Hook
+Automatically runs before pushing to remote:
+- **Frontend build test**: Ensures `npm run build` succeeds
+- **Contract build test**: Validates SUI Move contracts (if `sui` CLI is installed)
+
+This prevents broken code from being pushed to the repository, ensuring main branch stability.
+
+---
+
 ## 📁 Project Structure
 
 ```

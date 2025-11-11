@@ -99,7 +99,7 @@ export default function Home() {
           <h3 className="text-xl md:text-2xl font-bold mb-4">Built for Walrus Haulout Hackathon</h3>
           <p className="mb-4 text-sm md:text-base">
             Walmarket is a submission for the Provably Authentic track, creating a truth engine through prediction markets.
-            By combining SUI's infrastructure with Walrus storage and AI verification, we enable:
+            By combining SUI&apos;s infrastructure with Walrus storage and AI verification, we enable:
           </p>
           <ul className="space-y-2 mb-4 text-sm md:text-base">
             <li>✓ AI-powered oracle for automated market resolution</li>

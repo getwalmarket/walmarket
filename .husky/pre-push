@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run frontend build test
+echo "🔨 Running frontend build test..."
+npm run build
+
+# Run contract build test if sui CLI is available
+if command -v sui &> /dev/null; then
+  echo "🔧 Running contract build test..."
+  cd contracts && sui move build && cd ..
+else
+  echo "⚠️  Sui CLI not found, skipping contract build test"
+fi
+
+echo "✅ All build tests passed!"
