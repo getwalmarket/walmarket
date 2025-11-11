@@ -15,8 +15,8 @@ export default function Home() {
             <Image
               src="/icon-txt.png"
               alt="Walmarket"
-              width={1000}
-              height={300}
+              width={1024}
+              height={576}
               priority
               className="w-full max-w-3xl h-auto px-4"
             />
