@@ -27,12 +27,20 @@ export default function Home() {
           <p className="text-sm md:text-base text-gray-700 max-w-2xl mx-auto mb-10 px-4 leading-relaxed">
             A prediction market platform powered by Walrus and SUI. Where collective intelligence meets blockchain transparency to create verifiable truth.
           </p>
-          <Link
-            href="/markets"
-            className="inline-block px-10 py-4 bg-orange-500 text-white text-lg font-bold hover:bg-orange-600 transition-all border-4 border-orange-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.3)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-[6px] active:translate-y-[6px]"
-          >
-            LAUNCH APP
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link
+              href="/markets"
+              className="inline-block px-10 py-4 bg-orange-500 text-white text-lg font-bold hover:bg-orange-600 transition-all border-4 border-orange-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.3)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-[6px] active:translate-y-[6px]"
+            >
+              LAUNCH APP
+            </Link>
+            <Link
+              href="/how-it-works"
+              className="inline-block px-10 py-4 bg-white text-orange-600 text-lg font-bold hover:bg-gray-50 transition-all border-4 border-orange-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.3)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-none active:translate-x-[6px] active:translate-y-[6px]"
+            >
+              HOW IT WORKS
+            </Link>
+          </div>
         </div>
 
         {/* Features */}
