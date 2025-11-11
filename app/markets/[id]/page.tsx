@@ -360,9 +360,61 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
               </div>
 
               {!account ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-600 mb-4">Connect your wallet to start trading</p>
-                  <WalletButton />
+                <div className="space-y-6">
+                  {/* Market Preview */}
+                  <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-6">
+                    <div className="text-center mb-4">
+                      <div className="text-3xl mb-2">🎯</div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">Ready to bet?</h3>
+                      <p className="text-sm text-gray-600">Connect your wallet to place bets on this market</p>
+                    </div>
+
+                    {/* Current Odds Preview */}
+                    <div className="grid grid-cols-2 gap-3 mb-6">
+                      <div className="bg-white/80 border border-green-200 rounded-lg p-3 text-center">
+                        <div className="text-xs text-gray-600 mb-1">YES</div>
+                        <div className="text-2xl font-bold text-green-600">
+                          {(market.yesPrice * 100).toFixed(0)}%
+                        </div>
+                      </div>
+                      <div className="bg-white/80 border border-red-200 rounded-lg p-3 text-center">
+                        <div className="text-xs text-gray-600 mb-1">NO</div>
+                        <div className="text-2xl font-bold text-red-600">
+                          {(market.noPrice * 100).toFixed(0)}%
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Connect Wallet Button */}
+                    <div className="flex justify-center">
+                      <WalletButton />
+                    </div>
+                  </div>
+
+                  {/* Benefits */}
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3 text-sm">
+                      <span className="text-lg">✅</span>
+                      <div>
+                        <div className="font-semibold text-gray-900">Trade with USDT</div>
+                        <div className="text-gray-600">Use stablecoins for predictable value</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 text-sm">
+                      <span className="text-lg">⚡</span>
+                      <div>
+                        <div className="font-semibold text-gray-900">Instant Transactions</div>
+                        <div className="text-gray-600">Fast execution on SUI blockchain</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 text-sm">
+                      <span className="text-lg">🔒</span>
+                      <div>
+                        <div className="font-semibold text-gray-900">Secure & Verifiable</div>
+                        <div className="text-gray-600">AI oracle with TEE attestation</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-4">
