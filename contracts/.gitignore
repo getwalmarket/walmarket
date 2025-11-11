@@ -1,0 +1,5 @@
+# Move build artifacts
+build/
+
+# Move lock file
+Move.lock

@@ -174,12 +174,39 @@ npm start
 
 ---
 
+## 🔧 Smart Contracts
+
+Walmarket includes SUI Move smart contracts for on-chain prediction markets.
+
+### Build Contracts
+```bash
+cd contracts
+sui move build
+```
+
+### Test Contracts
+```bash
+cd contracts
+sui move test
+```
+
+### Deploy to Testnet
+```bash
+cd contracts
+sui client publish --gas-budget 100000000
+```
+
+📚 **For detailed contract documentation, see [contracts/README.md](./contracts/README.md)**
+
+---
+
 ## 📁 Project Structure
 
 ```
 walmarket/
 ├── app/
 │   ├── components/
+│   │   ├── Header.tsx             # Shared header with TESTNET badge
 │   │   └── WalletButton.tsx       # Wallet connection component
 │   ├── markets/
 │   │   ├── page.tsx               # Markets list page
@@ -189,6 +216,12 @@ walmarket/
 │   ├── page.tsx                   # Landing page
 │   ├── providers.tsx              # SUI & wallet providers
 │   └── globals.css                # Global styles + pixel font
+├── contracts/
+│   ├── sources/
+│   │   └── market.move            # Prediction market smart contract
+│   ├── tests/                     # Contract tests
+│   ├── Move.toml                  # Move package configuration
+│   └── README.md                  # Contract documentation
 ├── public/
 │   ├── icon-txt.png               # Walrus character + logo
 │   └── no-bg-txt.png              # Text-only logo
@@ -200,11 +233,18 @@ walmarket/
 
 ### Key Files
 
+#### Frontend
 - **`app/providers.tsx`**: Sets up SUI client and wallet providers
+- **`app/components/Header.tsx`**: Shared header component with TESTNET badge
 - **`app/components/WalletButton.tsx`**: Handles wallet connection UI
 - **`app/markets/page.tsx`**: Displays all available prediction markets with AI predictions
 - **`app/markets/[id]/page.tsx`**: Detailed market view with betting interface and AI analysis
 - **`app/globals.css`**: Global styles including Press Start 2P pixel font configuration
+
+#### Smart Contracts
+- **`contracts/sources/market.move`**: Main prediction market contract (Market creation, betting, resolution)
+- **`contracts/Move.toml`**: SUI Move package configuration
+- **`contracts/README.md`**: Comprehensive contract documentation and API reference
 
 ---
 

@@ -3,6 +3,7 @@
 import { use, useState } from "react";
 import Link from "next/link";
 import { Header } from "../../components/Header";
+import { WalletButton } from "../../components/WalletButton";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 
 // Mock data - same as markets page for consistency
