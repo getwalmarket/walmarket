@@ -6,7 +6,7 @@
   <p><strong>AI-Powered Prediction Markets on SUI</strong></p>
   <p>A truth engine powered by Walrus - predict, verify, and earn on decentralized prediction markets</p>
 
-  [![Demo](https://img.shields.io/badge/Demo-Live-brightgreen)](https://walmarket.vercel.app)
+  [![Demo](https://img.shields.io/badge/Demo-Live-brightgreen)](https://walmarket.fun)
   [![Video](https://img.shields.io/badge/Video-YouTube-red)](https://youtu.be/dQw4w9WgXcQ)
   [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 </div>
@@ -292,7 +292,7 @@ walmarket/
 
 ## 🔗 Links
 
-- **Live Demo**: [https://walmarket.vercel.app](https://walmarket.vercel.app)
+- **Live Demo**: [https://walmarket.fun](https://walmarket.fun)
 - **Demo Video**: [https://youtu.be/dQw4w9WgXcQ](https://youtu.be/dQw4w9WgXcQ)
 - **GitHub**: [https://github.com/leopard627/walmarket](https://github.com/leopard627/walmarket)
 - **SUI Network**: [https://sui.io](https://sui.io)
