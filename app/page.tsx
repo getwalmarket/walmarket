@@ -74,52 +74,76 @@ export default function Home() {
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-8 mx-4 mb-12 border-4 border-purple-700 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)] text-white">
           <div className="flex items-center gap-3 mb-4">
             <div className="text-4xl">🤖</div>
-            <h3 className="text-xl md:text-2xl font-bold">AI-Powered Truth Oracle</h3>
+            <h3 className="text-xl md:text-2xl font-bold">Verifiable AI Oracle powered by Nautilus TEE</h3>
           </div>
           <p className="mb-4 text-sm md:text-base">
-            Walmarket uses cutting-edge AI agents to automatically resolve prediction markets with unprecedented accuracy and transparency:
+            Walmarket combines GPT-5, Nautilus TEE, and cryptographic proofs to create the world&apos;s first truly verifiable AI oracle:
           </p>
           <div className="grid md:grid-cols-2 gap-4 mb-4">
             <div className="bg-white/10 p-4 rounded border-2 border-white/30">
-              <h4 className="font-bold mb-2 text-sm">🔍 Multi-Source Verification</h4>
-              <p className="text-xs opacity-90">AI agents cross-reference multiple trusted data sources to verify outcomes</p>
+              <h4 className="font-bold mb-2 text-sm">🔐 TEE Execution</h4>
+              <p className="text-xs opacity-90">AI inference runs inside Nautilus secure enclaves with cryptographic attestation</p>
             </div>
             <div className="bg-white/10 p-4 rounded border-2 border-white/30">
-              <h4 className="font-bold mb-2 text-sm">⚡ Real-Time Resolution</h4>
-              <p className="text-xs opacity-90">Instant market resolution when conditions are met, no manual intervention needed</p>
+              <h4 className="font-bold mb-2 text-sm">🔍 Multi-Source Verification</h4>
+              <p className="text-xs opacity-90">Cross-reference multiple trusted data sources for accurate outcomes</p>
             </div>
             <div className="bg-white/10 p-4 rounded border-2 border-white/30">
               <h4 className="font-bold mb-2 text-sm">📊 Transparent Reasoning</h4>
-              <p className="text-xs opacity-90">AI decision process stored on Walrus for full auditability</p>
+              <p className="text-xs opacity-90">Complete evidence bundle stored on Walrus for full auditability</p>
             </div>
             <div className="bg-white/10 p-4 rounded border-2 border-white/30">
-              <h4 className="font-bold mb-2 text-sm">🛡️ Dispute Prevention</h4>
-              <p className="text-xs opacity-90">Cryptographic proofs eliminate ambiguity and reduce disputes</p>
+              <h4 className="font-bold mb-2 text-sm">⚡ On-Chain Verification</h4>
+              <p className="text-xs opacity-90">SUI smart contracts verify TEE attestation and aggregate verified reports</p>
             </div>
           </div>
           <p className="text-xs md:text-sm opacity-90 italic">
-            Our AI Oracle combines the wisdom of prediction markets with the reliability of AI verification,
-            creating the most trustworthy truth engine in Web3.
+            The only prediction market oracle that proves AI execution integrity through trusted hardware - no trust required.
           </p>
+        </div>
+
+        {/* Tech Stack Highlight */}
+        <div className="grid md:grid-cols-3 gap-6 mb-12 px-4">
+          <div className="bg-gradient-to-br from-green-500 to-teal-600 p-6 border-4 border-green-700 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] text-white">
+            <div className="text-4xl mb-4">🔐</div>
+            <h3 className="text-lg font-bold mb-3">Nautilus TEE</h3>
+            <p className="text-sm leading-relaxed opacity-90">
+              Trusted Execution Environment ensures AI inference cannot be tampered with, providing cryptographic proof of execution.
+            </p>
+          </div>
+          <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-6 border-4 border-purple-700 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] text-white">
+            <div className="text-4xl mb-4">⚡</div>
+            <h3 className="text-lg font-bold mb-3">SUI Blockchain</h3>
+            <p className="text-sm leading-relaxed opacity-90">
+              High-performance Layer 1 with Move smart contracts for secure, efficient market resolution and aggregation.
+            </p>
+          </div>
+          <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-6 border-4 border-blue-700 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] text-white">
+            <div className="text-4xl mb-4">🦭</div>
+            <h3 className="text-lg font-bold mb-3">Walrus Storage</h3>
+            <p className="text-sm leading-relaxed opacity-90">
+              Decentralized storage for permanent, immutable evidence bundles with cryptographic integrity guarantees.
+            </p>
+          </div>
         </div>
 
         {/* About Walrus Hackathon */}
         <div className="bg-orange-500 p-8 mx-4 border-4 border-orange-600 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)] text-white">
-          <h3 className="text-xl md:text-2xl font-bold mb-4">Built for Walrus Haulout Hackathon</h3>
+          <h3 className="text-xl md:text-2xl font-bold mb-4">Built for Walrus Haulout Hackathon 2025</h3>
           <p className="mb-4 text-sm md:text-base">
-            Walmarket is a submission for the Provably Authentic track, creating a truth engine through prediction markets.
-            By combining SUI&apos;s infrastructure with Walrus storage and AI verification, we enable:
+            Walmarket is a submission for the <strong>Provably Authentic</strong> track, creating a verifiable truth engine through prediction markets.
+            By combining SUI, Walrus storage, Nautilus TEE, and GPT-5, we deliver:
           </p>
           <ul className="space-y-2 mb-4 text-sm md:text-base">
-            <li>✓ AI-powered oracle for automated market resolution</li>
-            <li>✓ Decentralized data storage for market outcomes on Walrus</li>
-            <li>✓ Cryptographic proof of prediction authenticity</li>
-            <li>✓ Economic incentives for accurate truth reporting</li>
-            <li>✓ Transparent, immutable record of collective intelligence</li>
+            <li>✓ <strong>Verifiable AI Oracle</strong> - TEE-powered GPT-5 inference with cryptographic attestation</li>
+            <li>✓ <strong>Immutable Evidence Storage</strong> - Complete audit trail on Walrus with blob hash verification</li>
+            <li>✓ <strong>On-Chain Verification</strong> - SUI smart contracts validate TEE signatures and aggregate reports</li>
+            <li>✓ <strong>Economic Truth Incentives</strong> - Stake, slash, and reward mechanisms for accuracy</li>
+            <li>✓ <strong>Trustless Resolution</strong> - No operator trust required thanks to secure hardware proofs</li>
           </ul>
           <p className="text-xs md:text-sm opacity-90">
-            Prediction markets have proven to be more accurate than polls and expert opinions.
-            Walmarket brings this power to the blockchain with AI verification, creating unstoppable truth infrastructure.
+            Prediction markets are proven to be more accurate than polls and expert opinions.
+            Walmarket brings this power to Web3 with <strong>verifiable AI execution</strong>, creating unstoppable truth infrastructure.
           </p>
         </div>
       </main>
