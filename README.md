@@ -7,7 +7,7 @@
   <p>A truth engine powered by Walrus - predict, verify, and earn on decentralized prediction markets</p>
 
   [![Demo](https://img.shields.io/badge/Demo-Live-brightgreen)](https://walmarket.fun)
-  [![Video](https://img.shields.io/badge/Video-YouTube-red)](https://youtu.be/dQw4w9WgXcQ)
+  [![Video](https://img.shields.io/badge/Video-YouTube-red)](https://youtu.be/HqkepADJnmU)
   [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 </div>
 
@@ -15,7 +15,7 @@
 
 ## 📺 Demo Video
 
-[![Walmarket Demo](https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg)](https://youtu.be/dQw4w9WgXcQ)
+[![Walmarket Demo](https://img.youtube.com/vi/HqkepADJnmU/maxresdefault.jpg)](https://youtu.be/HqkepADJnmU)
 
 > **Click to watch the full demo** - See Walmarket in action!
 
