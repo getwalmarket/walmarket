@@ -1,0 +1,45 @@
+{
+  "round": 12345,
+  "task": "binary",
+  "resolution": {
+    "value": 0,
+    "confidence": 0.87
+  },
+  "sources": [
+    {
+      "id": "coinmarketcap:btc",
+      "url": "https://coinmarketcap.com/currencies/bitcoin/",
+      "quote_hash": "0xabc123def456"
+    },
+    {
+      "id": "coingecko:btc",
+      "url": "https://www.coingecko.com/en/coins/bitcoin",
+      "quote_hash": "0xdef789ghi012"
+    },
+    {
+      "id": "binance:btc",
+      "url": "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT",
+      "quote_hash": "0x345jkl678mno"
+    }
+  ],
+  "rationale": "Based on multi-source verification from CoinMarketCap, CoinGecko, and Binance, Bitcoin's current price is approximately $95,200 as of December 30, 2024, 14:30 UTC. With less than 34 hours remaining until the end of 2024, and no significant catalysts or unusual trading volume patterns observed, it is highly unlikely that BTC will surge over 5% to reach $100,000. Historical volatility analysis shows that such rapid price movements in this timeframe are rare without major market events. Confidence: 87%",
+  "controls": {
+    "model_id": "gpt-5-thinking@2025-11-POC",
+    "prompt_hash": "0x7f9e8d6c5b4a3210fedcba9876543210abcdef1234567890",
+    "parser_hash": "0x1122334455667788990011223344556677889900aabbccdd",
+    "schema_hash": "0xffeeddccbbaa99887766554433221100ffeeddccbbaa9988"
+  },
+  "tee_proof": {
+    "enclave_id": "0x1234567890abcdef",
+    "enclave_pubkey": "0xabcdef1234567890",
+    "mrenclave": "0xdef1234567890abc",
+    "sig": "0x3045022100abcdef1234567890fedcba0987654321abcdef1234567890fedcba098765432102200987654321fedcbaabcdef1234567890fedcba0987654321fedcba0987654321",
+    "attestation": "0x789abc012def345678901234567890abcdef0123456789abcdef0123456789ab",
+    "timestamp": 1735574400,
+    "nonce": "0x9876543210fedcba1234567890abcdef9876543210fedcba1234567890abcdef",
+    "h_in": "0x11223344556677889900aabbccddeeff00112233445566778899aabbccddeeff",
+    "h_out": "0xffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100",
+    "blob_id": "Cu7KD1o8bwuW-rCVihj40Nu-iHBBRjy-C6eJJgiXqPw",
+    "blob_hash": "0xabcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"
+  }
+}

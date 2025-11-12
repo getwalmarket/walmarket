@@ -416,6 +416,16 @@ walmarket/
 │   ├── scripts/
 │   │   ├── create_market_with_walrus.sh  # Create market with Walrus metadata
 │   │   └── mint_usdt.sh           # Script to mint test USDT
+│   ├── oracle/                    # ⚠️ AI Oracle PoC (GPT-5 + Nautilus TEE simulation)
+│   │   ├── config.py              # Oracle configuration
+│   │   ├── openai_inference.py   # GPT-5 API integration
+│   │   ├── walrus_uploader.py    # Evidence bundle storage
+│   │   ├── signature_generator.py # TEE attestation (simulated)
+│   │   ├── tee_reporter.py       # Main orchestrator
+│   │   ├── example_output.json   # Example resolution report
+│   │   ├── requirements.txt      # Python dependencies
+│   │   ├── tests/                # Oracle tests
+│   │   └── README.md             # ⚠️ PoC documentation with warnings
 │   ├── tests/                     # Contract tests
 │   ├── Move.toml                  # Move package configuration
 │   └── README.md                  # Contract documentation
@@ -453,6 +463,16 @@ walmarket/
 - **`contracts/scripts/mint_usdt.sh`**: Helper script to mint test USDT tokens
 - **`contracts/Move.toml`**: SUI Move package configuration
 - **`contracts/README.md`**: Comprehensive contract documentation and API reference
+
+#### AI Oracle (⚠️ PoC Implementation)
+- **`contracts/oracle/`**: GPT-5 + Nautilus TEE AI Oracle **Proof-of-Concept**
+  - **WARNING**: This is a SIMULATION for hackathon demonstration. NOT production-ready.
+  - `tee_reporter.py`: Main orchestrator for AI Oracle workflow
+  - `openai_inference.py`: GPT-5 API integration with deterministic prompts
+  - `walrus_uploader.py`: Evidence bundle upload to Walrus storage
+  - `signature_generator.py`: TEE attestation simulation (NOT real secure enclave)
+  - `tests/`: Unit tests for oracle components
+  - See `contracts/oracle/README.md` for detailed PoC documentation and warnings
 
 ---
 
