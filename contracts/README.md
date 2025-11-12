@@ -135,6 +135,165 @@ sui client publish --gas-budget 100000000
 
 After deployment, save the package ID and update your frontend configuration.
 
+---
+
+## 🎯 Live Test Market on SUI Testnet
+
+A live test market has been deployed for judges and testers to interact with and verify the Walrus integration.
+
+### Latest Deployment (With Walrus Integration)
+- **Package ID**: `0x03746b9be956d9964e460a0fe401b46e7af331e912fb9aca4d5fefebb38ae9fb`
+- **Market Registry ID**: `0xea117fd8fe57fcbd3412ed2e265ee63e0773d91b5ca8f52c7bfd10c3d3a0e976`
+- **USDT Treasury Cap**: `0xb0875388986c88bd91d9558c7e486e424601b508d50d7e3b98759d77999f26b6`
+- **Deployment Transaction**: [59ZsmXowjja2G2BJe4wTJbzoftCER1WsJxS6XsWV5Nh8](https://suiscan.xyz/testnet/tx/59ZsmXowjja2G2BJe4wTJbzoftCER1WsJxS6XsWV5Nh8)
+
+### Test Market Details
+
+**Market Information:**
+- **Market ID**: `0xe50c1c46468a510e2bef9e056e52eef552edf0b0ff7f7490d9f695f15139b470`
+- **Question**: "Will BTC reach $100k by end of 2024?"
+- **Description**: "Bitcoin price prediction market"
+- **Category**: Crypto
+- **End Date**: December 31, 2024 (timestamp: 1735689600000)
+- **Creation Transaction**: [AbozzspGSpiRq81c1QakW6cYJj76RMZVAe2za1cyhyV1](https://suiscan.xyz/testnet/tx/AbozzspGSpiRq81c1QakW6cYJj76RMZVAe2za1cyhyV1)
+
+**Walrus Integration:**
+- **Metadata Blob ID**: `Cu7KD1o8bwuW-rCVihj40Nu-iHBBRjy-C6eJJgiXqPw`
+- **Metadata Contents**: Full market details including data sources, resolution criteria, and images
+- **Storage**: Permanently stored on Walrus for immutable audit trail
+
+### View Market Data on Explorers
+
+**SUI Blockchain:**
+- [Market Object on Suiscan](https://suiscan.xyz/testnet/object/0xe50c1c46468a510e2bef9e056e52eef552edf0b0ff7f7490d9f695f15139b470)
+- [Package on Suiscan](https://suiscan.xyz/testnet/object/0x03746b9be956d9964e460a0fe401b46e7af331e912fb9aca4d5fefebb38ae9fb)
+- [Registry on Suiscan](https://suiscan.xyz/testnet/object/0xea117fd8fe57fcbd3412ed2e265ee63e0773d91b5ca8f52c7bfd10c3d3a0e976)
+
+**Walrus Storage:**
+- [Metadata Blob on Walruscan](https://walruscan.com/testnet/blob/Cu7KD1o8bwuW-rCVihj40Nu-iHBBRjy-C6eJJgiXqPw)
+- [Walrus Testnet Explorer](https://walruscan.com/testnet/home)
+
+### Inspect Market Using SUI CLI
+
+```bash
+# View full market object details
+sui client object 0xe50c1c46468a510e2bef9e056e52eef552edf0b0ff7f7490d9f695f15139b470
+
+# View market registry
+sui client object 0xea117fd8fe57fcbd3412ed2e265ee63e0773d91b5ca8f52c7bfd10c3d3a0e976
+
+# View package
+sui client object 0x03746b9be956d9964e460a0fe401b46e7af331e912fb9aca4d5fefebb38ae9fb
+```
+
+### Fetch Walrus Metadata
+
+The market metadata is stored on Walrus and can be retrieved using the blob ID:
+
+```bash
+# Fetch metadata from Walrus (requires Walrus CLI)
+walrus read Cu7KD1o8bwuW-rCVihj40Nu-iHBBRjy-C6eJJgiXqPw
+```
+
+**Expected Metadata Structure:**
+```json
+{
+  "title": "Will BTC reach $100k by end of 2024?",
+  "description": "Bitcoin price prediction market",
+  "category": "Crypto",
+  "end_date": 1735689600000,
+  "created_at": "2025-11-12T01:25:25Z",
+  "version": "1.0",
+  "data_sources": {
+    "crypto": [
+      "CoinMarketCap API",
+      "CoinGecko API",
+      "Coinbase API",
+      "Binance API"
+    ],
+    "traditional_finance": [
+      "Bloomberg API",
+      "Reuters API",
+      "Yahoo Finance API"
+    ],
+    "politics": [
+      "AP News",
+      "Reuters",
+      "Fox News",
+      "Official Government Sources"
+    ],
+    "sports": [
+      "ESPN API",
+      "Official League APIs"
+    ]
+  },
+  "resolution_criteria": "Market will be resolved by AI oracle using multi-source verification",
+  "tags": ["prediction", "market", "Crypto"],
+  "images": []
+}
+```
+
+### Create Additional Test Markets
+
+Use the provided script to create more markets with Walrus integration:
+
+```bash
+cd scripts
+
+# Example: Crypto market without images
+./create_market_with_walrus.sh \
+  'Will ETH reach $10k?' \
+  'Ethereum price prediction for 2025' \
+  'Crypto' \
+  1735689600000
+
+# Example: Politics market
+./create_market_with_walrus.sh \
+  'Will there be a US recession in 2025?' \
+  'Economic outlook prediction' \
+  'Politics' \
+  1735689600000
+
+# Example: Market with images (local files or URLs)
+./create_market_with_walrus.sh \
+  'Will BTC reach $100k?' \
+  'Bitcoin price prediction' \
+  'Crypto' \
+  1735689600000 \
+  chart.png \
+  https://example.com/logo.png
+
+# The script will:
+# 1. Upload images to Walrus (if provided)
+# 2. Create metadata JSON with data sources
+# 3. Upload metadata to Walrus
+# 4. Create market on-chain with Walrus blob ID
+```
+
+### Verify Walrus Integration
+
+To verify the complete Walrus integration workflow:
+
+1. **Check On-Chain Market**:
+   ```bash
+   sui client object 0xe50c1c46468a510e2bef9e056e52eef552edf0b0ff7f7490d9f695f15139b470 --json | jq '.content.fields.walrus_metadata_blob_id'
+   ```
+
+2. **Fetch Metadata from Walrus**:
+   ```bash
+   walrus read Cu7KD1o8bwuW-rCVihj40Nu-iHBBRjy-C6eJJgiXqPw
+   ```
+
+3. **View on Walruscan**:
+   - Visit [Walruscan](https://walruscan.com/testnet/blob/Cu7KD1o8bwuW-rCVihj40Nu-iHBBRjy-C6eJJgiXqPw) to see blob details
+
+4. **Verify Data Integrity**:
+   - Compare on-chain blob ID with Walrus storage
+   - Verify metadata structure matches expected format
+   - Confirm all data sources are listed
+
+---
+
 ## Contract Functions
 
 ### USDT Token Functions

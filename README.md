@@ -209,6 +209,89 @@ export PACKAGE_ID=0x6e930c6b39d8a77e4e755148564207a801d0a2f550ec306fee7b9b913ed6
 
 ---
 
+## 🎯 Live Test Market on SUI Testnet
+
+A live test market has been deployed for judges and testers to interact with:
+
+### Latest Deployment (With Walrus Integration)
+- **Package ID**: `0x03746b9be956d9964e460a0fe401b46e7af331e912fb9aca4d5fefebb38ae9fb`
+- **Market Registry ID**: `0xea117fd8fe57fcbd3412ed2e265ee63e0773d91b5ca8f52c7bfd10c3d3a0e976`
+- **Deployment Transaction**: `59ZsmXowjja2G2BJe4wTJbzoftCER1WsJxS6XsWV5Nh8`
+
+### Test Market Details
+- **Market ID**: `0xe50c1c46468a510e2bef9e056e52eef552edf0b0ff7f7490d9f695f15139b470`
+- **Question**: "Will BTC reach $100k by end of 2024?"
+- **Description**: "Bitcoin price prediction market"
+- **Category**: Crypto
+- **End Date**: December 31, 2024 (timestamp: 1735689600000)
+- **Creation Transaction**: `AbozzspGSpiRq81c1QakW6cYJj76RMZVAe2za1cyhyV1`
+- **Walrus Metadata Blob ID**: `Cu7KD1o8bwuW-rCVihj40Nu-iHBBRjy-C6eJJgiXqPw`
+
+### View on Explorers
+
+**SUI Blockchain:**
+- **Market Object**: [View on Suiscan](https://suiscan.xyz/testnet/object/0xe50c1c46468a510e2bef9e056e52eef552edf0b0ff7f7490d9f695f15139b470)
+- **Creation Transaction**: [View on Suiscan](https://suiscan.xyz/testnet/tx/AbozzspGSpiRq81c1QakW6cYJj76RMZVAe2za1cyhyV1)
+- **Package**: [View on Suiscan](https://suiscan.xyz/testnet/object/0x03746b9be956d9964e460a0fe401b46e7af331e912fb9aca4d5fefebb38ae9fb)
+
+**Walrus Storage:**
+- **Metadata Blob**: [View on Walruscan](https://walruscan.com/testnet/blob/Cu7KD1o8bwuW-rCVihj40Nu-iHBBRjy-C6eJJgiXqPw)
+- **Walrus Testnet Explorer**: [https://walruscan.com/testnet/home](https://walruscan.com/testnet/home)
+
+### Inspect Market & Walrus Data
+
+**View Market On-Chain:**
+```bash
+# View market details
+sui client object 0xe50c1c46468a510e2bef9e056e52eef552edf0b0ff7f7490d9f695f15139b470
+```
+
+**Fetch Metadata from Walrus:**
+
+Using Walrus CLI:
+```bash
+walrus read Cu7KD1o8bwuW-rCVihj40Nu-iHBBRjy-C6eJJgiXqPw
+```
+
+**📋 [View Metadata on Walruscan](https://walruscan.com/testnet/blob/Cu7KD1o8bwuW-rCVihj40Nu-iHBBRjy-C6eJJgiXqPw)**
+
+This will show the complete market metadata JSON including:
+- Market title, description, and category
+- Data sources (CoinMarketCap, CoinGecko, Binance, etc.)
+- Resolution criteria
+- Images (if uploaded)
+- Timestamps and versioning
+
+### Create Additional Test Markets
+```bash
+cd contracts/scripts
+
+# Example: Crypto market
+./create_market_with_walrus.sh \
+  'Will ETH reach $10k?' \
+  'Ethereum price prediction for 2025' \
+  'Crypto' \
+  1735689600000
+
+# Example: Politics market
+./create_market_with_walrus.sh \
+  'Will there be a US recession in 2025?' \
+  'Economic outlook prediction' \
+  'Politics' \
+  1735689600000
+
+# Example: With images
+./create_market_with_walrus.sh \
+  'Will BTC reach $100k?' \
+  'Bitcoin price prediction' \
+  'Crypto' \
+  1735689600000 \
+  chart.png \
+  https://example.com/logo.png
+```
+
+---
+
 ## 🚀 Installation & Setup
 
 ### Prerequisites

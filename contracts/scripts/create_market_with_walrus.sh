@@ -39,8 +39,8 @@ shift 4
 IMAGE_FILES=("$@")
 
 # Configuration
-PACKAGE_ID="${PACKAGE_ID:-0x6e930c6b39d8a77e4e755148564207a801d0a2f550ec306fee7b9b913ed6f17d}"
-MARKET_REGISTRY="${MARKET_REGISTRY:-0xec89a1e95991bb73e1e521540036d8ffc3eb5892a4629e616873d4586a00c4df}"
+PACKAGE_ID="${PACKAGE_ID:-0x03746b9be956d9964e460a0fe401b46e7af331e912fb9aca4d5fefebb38ae9fb}"
+MARKET_REGISTRY="${MARKET_REGISTRY:-0xea117fd8fe57fcbd3412ed2e265ee63e0773d91b5ca8f52c7bfd10c3d3a0e976}"
 
 echo -e "${YELLOW}=== Walmarket Market Creation ===${NC}"
 echo ""
@@ -99,8 +99,9 @@ if [ "${#IMAGE_FILES[@]}" -gt 0 ]; then
         echo "Uploading to Walrus: $IMAGE_NAME"
 
         if command -v walrus &> /dev/null; then
-            # Upload image to Walrus
-            IMAGE_BLOB_ID=$(walrus store "$IMAGE_FILE" 2>&1 | grep -oE "blob_id: [a-zA-Z0-9]+" | cut -d' ' -f2 || echo "")
+            # Upload image to Walrus with 5 epochs storage
+            IMAGE_WALRUS_OUTPUT=$(walrus store --epochs 5 "$IMAGE_FILE" 2>&1)
+            IMAGE_BLOB_ID=$(echo "$IMAGE_WALRUS_OUTPUT" | grep -oE "Blob ID: [a-zA-Z0-9_\-]+" | cut -d' ' -f3)
 
             if [ -z "$IMAGE_BLOB_ID" ]; then
                 echo -e "${YELLOW}  Failed to upload. Using placeholder...${NC}"
@@ -194,9 +195,11 @@ echo -e "${GREEN}Step 3: Uploading metadata to Walrus...${NC}"
 if command -v walrus &> /dev/null; then
     echo "Using Walrus CLI..."
 
-    # Upload to Walrus (adjust command based on actual Walrus CLI)
-    # For now, this is a placeholder - replace with actual Walrus upload command
-    BLOB_ID=$(walrus store "$METADATA_FILE" 2>&1 | grep -oE "blob_id: [a-zA-Z0-9]+" | cut -d' ' -f2 || echo "")
+    # Upload to Walrus with 5 epochs storage
+    WALRUS_OUTPUT=$(walrus store --epochs 5 "$METADATA_FILE" 2>&1)
+
+    # Extract blob ID from output (format: "Blob ID: ...")
+    BLOB_ID=$(echo "$WALRUS_OUTPUT" | grep -oE "Blob ID: [a-zA-Z0-9_\-]+" | cut -d' ' -f3)
 
     if [ -z "$BLOB_ID" ]; then
         echo -e "${RED}Failed to upload to Walrus. Using placeholder blob ID...${NC}"
@@ -236,19 +239,53 @@ echo "  End Date: $END_DATE"
 echo "  Walrus Blob ID: $BLOB_ID"
 echo ""
 
+# Debug: Show detailed argument information
+echo -e "${YELLOW}=== DETAILED DEBUG INFO ===${NC}"
+echo "Number of arguments to pass: 6"
+echo ""
+echo "Arg 1 (registry shared object):"
+echo "  Value: $MARKET_REGISTRY"
+echo "  Type: address (shared object reference)"
+echo ""
+echo "Arg 2 (title):"
+echo "  Value: $TITLE"
+echo "  Type: vector<u8> (string)"
+echo ""
+echo "Arg 3 (description):"
+echo "  Value: $DESCRIPTION"
+echo "  Type: vector<u8> (string)"
+echo ""
+echo "Arg 4 (category):"
+echo "  Value: $CATEGORY"
+echo "  Type: vector<u8> (string)"
+echo ""
+echo "Arg 5 (end_date):"
+echo "  Value: $END_DATE"
+echo "  Type: u64 (number)"
+echo ""
+echo "Arg 6 (walrus_blob_id):"
+echo "  Value: $BLOB_ID"
+echo "  Type: vector<u8> (string)"
+echo ""
+echo -e "${YELLOW}=== END DEBUG INFO ===${NC}"
+echo ""
+
 # Call SUI move function
-# Note: Strings are automatically converted to vector<u8> by sui client
+# Note: Strings are passed WITHOUT quotes - sui client handles conversion to vector<u8>
+echo "Executing sui client call command..."
+echo ""
+
 sui client call \
     --package "$PACKAGE_ID" \
     --module market \
     --function create_market \
     --args \
         "$MARKET_REGISTRY" \
-        "\"$TITLE\"" \
-        "\"$DESCRIPTION\"" \
-        "\"$CATEGORY\"" \
+        "$TITLE" \
+        "$DESCRIPTION" \
+        "$CATEGORY" \
         "$END_DATE" \
-        "\"$BLOB_ID\"" \
+        "$BLOB_ID" \
     --gas-budget 100000000
 
 echo ""
