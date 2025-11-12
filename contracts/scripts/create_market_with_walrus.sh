@@ -12,9 +12,20 @@ NC='\033[0m' # No Color
 
 # Check arguments
 if [ "$#" -lt 4 ]; then
-    echo -e "${RED}Usage: $0 <title> <description> <category> <end_timestamp> [image_files...]${NC}"
-    echo "Example: $0 \"Will BTC reach \$100k?\" \"Bitcoin price prediction\" \"Crypto\" 1735689600000"
-    echo "Example with images: $0 \"Will BTC reach \$100k?\" \"Bitcoin price prediction\" \"Crypto\" 1735689600000 chart.png logo.jpg"
+    echo -e "${RED}Usage: $0 <title> <description> <category> <end_timestamp> [image_files_or_urls...]${NC}"
+    echo ""
+    echo "Examples:"
+    echo "  # No images"
+    echo "  $0 \"Will BTC reach \$100k?\" \"Bitcoin price prediction\" \"Crypto\" 1735689600000"
+    echo ""
+    echo "  # With local image files"
+    echo "  $0 \"Will BTC reach \$100k?\" \"Bitcoin price prediction\" \"Crypto\" 1735689600000 chart.png logo.jpg"
+    echo ""
+    echo "  # With image URLs"
+    echo "  $0 \"Will BTC reach \$100k?\" \"Bitcoin price prediction\" \"Crypto\" 1735689600000 https://example.com/chart.png"
+    echo ""
+    echo "  # Mix of files and URLs"
+    echo "  $0 \"Will BTC reach \$100k?\" \"Bitcoin price prediction\" \"Crypto\" 1735689600000 chart.png https://example.com/logo.png"
     exit 1
 fi
 
@@ -34,17 +45,56 @@ echo ""
 
 # Step 1: Upload images to Walrus (if provided)
 IMAGE_BLOB_IDS=()
+IMAGE_NAMES=()
+TEMP_FILES=()
 
 if [ "${#IMAGE_FILES[@]}" -gt 0 ]; then
-    echo -e "${GREEN}Step 1: Uploading images to Walrus...${NC}"
+    echo -e "${GREEN}Step 1: Processing images...${NC}"
 
-    for IMAGE_FILE in "${IMAGE_FILES[@]}"; do
-        if [ ! -f "$IMAGE_FILE" ]; then
-            echo -e "${YELLOW}Warning: Image file not found: $IMAGE_FILE (skipping)${NC}"
-            continue
+    for IMAGE_INPUT in "${IMAGE_FILES[@]}"; do
+        IMAGE_FILE=""
+        IMAGE_NAME=""
+
+        # Check if input is a URL
+        if [[ "$IMAGE_INPUT" =~ ^https?:// ]]; then
+            echo "Downloading from URL: $IMAGE_INPUT"
+
+            # Extract filename from URL or generate one
+            IMAGE_NAME=$(basename "$IMAGE_INPUT" | sed 's/[?#].*//')
+            if [ -z "$IMAGE_NAME" ] || [[ ! "$IMAGE_NAME" =~ \.(jpg|jpeg|png|gif|webp|svg)$ ]]; then
+                IMAGE_NAME="image_$(date +%s).jpg"
+            fi
+
+            # Download to temp file
+            TEMP_FILE="/tmp/walmarket_img_$(date +%s)_$IMAGE_NAME"
+            if command -v curl &> /dev/null; then
+                curl -sL "$IMAGE_INPUT" -o "$TEMP_FILE"
+            elif command -v wget &> /dev/null; then
+                wget -q "$IMAGE_INPUT" -O "$TEMP_FILE"
+            else
+                echo -e "${RED}  Error: curl or wget required to download images${NC}"
+                continue
+            fi
+
+            if [ ! -f "$TEMP_FILE" ] || [ ! -s "$TEMP_FILE" ]; then
+                echo -e "${YELLOW}  Failed to download. Skipping...${NC}"
+                continue
+            fi
+
+            IMAGE_FILE="$TEMP_FILE"
+            TEMP_FILES+=("$TEMP_FILE")
+            echo -e "${GREEN}  Downloaded successfully!${NC}"
+        else
+            # Treat as file path
+            if [ ! -f "$IMAGE_INPUT" ]; then
+                echo -e "${YELLOW}Warning: Image file not found: $IMAGE_INPUT (skipping)${NC}"
+                continue
+            fi
+            IMAGE_FILE="$IMAGE_INPUT"
+            IMAGE_NAME=$(basename "$IMAGE_FILE")
         fi
 
-        echo "Uploading: $IMAGE_FILE"
+        echo "Uploading to Walrus: $IMAGE_NAME"
 
         if command -v walrus &> /dev/null; then
             # Upload image to Walrus
@@ -64,7 +114,14 @@ if [ "${#IMAGE_FILES[@]}" -gt 0 ]; then
 
         echo "  Blob ID: $IMAGE_BLOB_ID"
         IMAGE_BLOB_IDS+=("$IMAGE_BLOB_ID")
+        IMAGE_NAMES+=("$IMAGE_NAME")
     done
+
+    # Clean up temporary files
+    for TEMP_FILE in "${TEMP_FILES[@]}"; do
+        rm -f "$TEMP_FILE"
+    done
+
     echo ""
 fi
 
@@ -78,7 +135,7 @@ if [ "${#IMAGE_BLOB_IDS[@]}" -gt 0 ]; then
     IMAGES_JSON="["
     for i in "${!IMAGE_BLOB_IDS[@]}"; do
         BLOB_ID="${IMAGE_BLOB_IDS[$i]}"
-        IMAGE_NAME=$(basename "${IMAGE_FILES[$i]}")
+        IMAGE_NAME="${IMAGE_NAMES[$i]}"
         IMAGES_JSON="$IMAGES_JSON{\"blob_id\":\"$BLOB_ID\",\"filename\":\"$IMAGE_NAME\"}"
         if [ $i -lt $((${#IMAGE_BLOB_IDS[@]} - 1)) ]; then
             IMAGES_JSON="$IMAGES_JSON,"
@@ -206,7 +263,7 @@ if [ "${#IMAGE_BLOB_IDS[@]}" -gt 0 ]; then
     echo ""
     echo "Uploaded Images:"
     for i in "${!IMAGE_BLOB_IDS[@]}"; do
-        echo "  - ${IMAGE_FILES[$i]}: ${IMAGE_BLOB_IDS[$i]}"
+        echo "  - ${IMAGE_NAMES[$i]}: ${IMAGE_BLOB_IDS[$i]}"
     done
 fi
 
