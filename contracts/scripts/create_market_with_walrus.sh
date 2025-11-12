@@ -226,12 +226,6 @@ echo ""
 # Step 4: Create market on-chain
 echo -e "${GREEN}Step 4: Creating market on SUI blockchain...${NC}"
 
-# Convert title, description, category to hex
-TITLE_HEX=$(echo -n "$TITLE" | xxd -p | tr -d '\n')
-DESC_HEX=$(echo -n "$DESCRIPTION" | xxd -p | tr -d '\n')
-CATEGORY_HEX=$(echo -n "$CATEGORY" | xxd -p | tr -d '\n')
-BLOB_ID_HEX=$(echo -n "$BLOB_ID" | xxd -p | tr -d '\n')
-
 echo "Calling create_market function..."
 echo "  Package ID: $PACKAGE_ID"
 echo "  Market Registry: $MARKET_REGISTRY"
@@ -243,17 +237,18 @@ echo "  Walrus Blob ID: $BLOB_ID"
 echo ""
 
 # Call SUI move function
+# Note: Strings are automatically converted to vector<u8> by sui client
 sui client call \
     --package "$PACKAGE_ID" \
     --module market \
     --function create_market \
     --args \
         "$MARKET_REGISTRY" \
-        "[0x$TITLE_HEX]" \
-        "[0x$DESC_HEX]" \
-        "[0x$CATEGORY_HEX]" \
+        "\"$TITLE\"" \
+        "\"$DESCRIPTION\"" \
+        "\"$CATEGORY\"" \
         "$END_DATE" \
-        "[0x$BLOB_ID_HEX]" \
+        "\"$BLOB_ID\"" \
     --gas-budget 100000000
 
 echo ""
