@@ -1,7 +1,7 @@
 # 🔮 Walmarket - Decentralized Truth Through Markets
 
 <div align="center">
-  <img src="./public/icon-txt.png" alt="Walmarket Logo" width="400"/>
+  <img src="https://github.com/user-attachments/assets/d57626f8-6320-4210-9314-ece92132cdd7" alt="Walmarket Logo" width="400"/>
 
   <p><strong>AI-Powered Prediction Markets on SUI</strong></p>
   <p>A truth engine powered by Walrus - predict, verify, and earn on decentralized prediction markets</p>
@@ -627,5 +627,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <div align="center">
   <p>Built with ❤️ for Walrus Haulout Hackathon 2025</p>
   <p>Creating Unstoppable Truth Infrastructure</p>
-  <img src="./public/no-bg-txt.png" alt="Walmarket" width="200"/>
+  <img src="https://github.com/user-attachments/assets/d57626f8-6320-4210-9314-ece92132cdd7" alt="Walmarket" width="200"/>
 </div>
