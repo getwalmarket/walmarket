@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  frontend-build:
+    name: Frontend Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run ESLint
+      run: npm run lint
+
+    - name: Build Next.js
+      run: npm run build
+
+  contract-build:
+    name: Smart Contract Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install Sui CLI
+      run: |
+        wget -qO- https://github.com/MystenLabs/sui/releases/download/testnet-v1.34.1/sui-testnet-v1.34.1-ubuntu-x86_64.tgz | tar -xzC /tmp
+        sudo mv /tmp/sui /usr/local/bin/
+        sui --version
+
+    - name: Build Contracts
+      working-directory: contracts
+      run: sui move build
+
+    - name: Test Contracts
+      working-directory: contracts
+      run: sui move test

@@ -12,6 +12,10 @@
   [![GitHub](https://img.shields.io/badge/GitHub-getwalmarket-black)](https://github.com/getwalmarket/walmarket)
   [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 
+  ![CI Status](https://github.com/getwalmarket/walmarket/actions/workflows/ci.yml/badge.svg)
+  ![Build](https://img.shields.io/badge/build-passing-brightgreen)
+  ![Contracts](https://img.shields.io/badge/contracts-tested-success)
+
   ![Visitors](https://api.visitorbadge.io/api/visitors?path=getwalmarket%2Fwalmarket&label=Visitors&countColor=%23263759&style=flat)
   ![GitHub clones](https://img.shields.io/badge/dynamic/json?color=success&label=Clones&query=count&url=https://api.github.com/repos/getwalmarket/walmarket/traffic/clones&logo=github)
 </div>
