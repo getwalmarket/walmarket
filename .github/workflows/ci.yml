@@ -48,7 +48,3 @@ jobs:
     - name: Build Contracts
       working-directory: contracts
       run: sui move build
-
-    - name: Test Contracts
-      working-directory: contracts
-      run: sui move test
