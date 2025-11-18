@@ -35,6 +35,12 @@ module walmarket::market {
         oracle_evidence_blob_id: vector<u8>,
         /// Oracle reporter address (TEE attested)
         oracle_reporter: address,
+        /// Seal-encrypted premium evidence blob ID (optional)
+        encrypted_evidence_blob_id: vector<u8>,
+        /// Whether this market requires premium access for full evidence
+        requires_premium_access: bool,
+        /// Seal policy ID for access control (if premium)
+        seal_policy_id: vector<u8>,
     }
 
     /// Position struct representing a user's bet
@@ -147,6 +153,9 @@ module walmarket::market {
             walrus_metadata_blob_id: walrus_blob_id,
             oracle_evidence_blob_id: vector::empty(),
             oracle_reporter: @0x0,
+            encrypted_evidence_blob_id: vector::empty(),
+            requires_premium_access: false,
+            seal_policy_id: vector::empty(),
         };
 
         // Track market in registry
@@ -206,11 +215,11 @@ module walmarket::market {
     }
 
     /// Resolve a market with oracle evidence stored on Walrus
-    /// In production, this should verify TEE attestation
+    /// Supports both public and Seal-encrypted evidence
     public entry fun resolve_market(
         market: &mut Market,
         outcome: u8, // 1 = YES, 2 = NO
-        oracle_evidence_blob_id: vector<u8>, // Walrus blob ID containing AI reasoning, sources, TEE proof
+        oracle_evidence_blob_id: vector<u8>, // Public outcome blob ID
         ctx: &mut TxContext
     ) {
         // Only creator can resolve for now (TODO: add TEE oracle verification)
@@ -223,6 +232,40 @@ module walmarket::market {
         market.outcome = outcome;
         market.oracle_evidence_blob_id = oracle_evidence_blob_id;
         market.oracle_reporter = tx_context::sender(ctx);
+
+        event::emit(MarketResolved {
+            market_id: object::uid_to_address(&market.id),
+            outcome,
+            oracle_reporter: market.oracle_reporter,
+            oracle_evidence_blob_id: market.oracle_evidence_blob_id,
+        });
+    }
+
+    /// Resolve market with premium Seal-encrypted evidence
+    /// This stores encrypted blob separately for premium subscribers
+    public entry fun resolve_market_with_premium(
+        market: &mut Market,
+        outcome: u8, // 1 = YES, 2 = NO
+        public_outcome_blob_id: vector<u8>, // Public outcome only
+        encrypted_evidence_blob_id: vector<u8>, // Seal-encrypted full evidence
+        seal_policy_id: vector<u8>, // Seal policy for access control
+        ctx: &mut TxContext
+    ) {
+        // Only creator can resolve (TODO: add TEE oracle verification)
+        assert!(tx_context::sender(ctx) == market.creator, E_NOT_CREATOR);
+        assert!(market.status == 0, E_MARKET_ALREADY_RESOLVED);
+        assert!(outcome == 1 || outcome == 2, E_INVALID_OUTCOME);
+        assert!(vector::length(&public_outcome_blob_id) > 0, E_INVALID_BLOB_ID);
+        assert!(vector::length(&encrypted_evidence_blob_id) > 0, E_INVALID_BLOB_ID);
+        assert!(vector::length(&seal_policy_id) > 0, E_INVALID_BLOB_ID);
+
+        market.status = outcome;
+        market.outcome = outcome;
+        market.oracle_evidence_blob_id = public_outcome_blob_id;
+        market.encrypted_evidence_blob_id = encrypted_evidence_blob_id;
+        market.oracle_reporter = tx_context::sender(ctx);
+        market.requires_premium_access = true;
+        market.seal_policy_id = seal_policy_id;
 
         event::emit(MarketResolved {
             market_id: object::uid_to_address(&market.id),
@@ -320,5 +363,17 @@ module walmarket::market {
 
     public fun get_market_by_index(registry: &MarketRegistry, index: u64): address {
         *table::borrow(&registry.market_ids, index)
+    }
+
+    public fun requires_premium_access(market: &Market): bool {
+        market.requires_premium_access
+    }
+
+    public fun get_encrypted_evidence_blob_id(market: &Market): vector<u8> {
+        market.encrypted_evidence_blob_id
+    }
+
+    public fun get_seal_policy_id(market: &Market): vector<u8> {
+        market.seal_policy_id
     }
 }
