@@ -73,7 +73,14 @@ Walmarket is the **world's first verifiable AI oracle** for prediction markets, 
 
 ## ✨ Core Features
 
-### 1. Verifiable AI Oracle with Nautilus TEE
+### 1. Premium Access Control with Seal
+- **Token-Gated Content**: Oracle evidence encrypted with Seal for premium subscribers only
+- **Multi-Tier Access**: Free (outcome only), Premium (full reasoning), Enterprise (analytics)
+- **NFT-Based Passes**: PremiumAccessPass NFTs grant tiered access to encrypted data
+- **Onchain Policies**: Access rules enforced via Sui smart contracts
+- **Decentralized Encryption**: Threshold encryption with no central key custodian
+
+### 2. Verifiable AI Oracle with Nautilus TEE
 - **Trusted Execution Environment**: GPT-5 inference runs inside Nautilus secure enclaves
 - **Remote Attestation**: Each report includes enclave signature (mrenclave) proving execution integrity
 - **Multi-Source Verification**: AI agents cross-reference multiple trusted data sources
@@ -81,7 +88,7 @@ Walmarket is the **world's first verifiable AI oracle** for prediction markets, 
 - **On-Chain Validation**: SUI smart contracts verify TEE signatures against enclave registry whitelist
 - **Replay Protection**: Timestamps and nonces prevent report replay attacks
 
-### 2. USDT-Based Prediction Markets
+### 3. USDT-Based Prediction Markets
 - Create custom prediction markets on any real-world event
 - **USDT Trading**: All markets use USDT stablecoin (6 decimals) for predictable value
 - Binary outcome markets (YES/NO) with transparent odds
@@ -90,7 +97,7 @@ Walmarket is the **world's first verifiable AI oracle** for prediction markets, 
 - Volume tracking and participant statistics
 - **Walrus Metadata**: Market details stored immutably on Walrus for auditability
 
-### 3. Wallet Integration
+### 4. Wallet Integration
 - **Supported Wallets**:
   - Sui Wallet
   - Suiet Wallet
@@ -104,7 +111,7 @@ Walmarket is the **world's first verifiable AI oracle** for prediction markets, 
 - Address display with truncation
 - Automatic wallet detection
 
-### 4. Walrus Storage Integration
+### 5. Walrus Storage Integration
 - **Market Metadata Storage**: Full market details (descriptions, images, sources) stored on Walrus
   - `walrus_metadata_blob_id` stored on-chain for each market
   - Rich metadata beyond on-chain storage limits
@@ -132,7 +139,7 @@ Walmarket is the **world's first verifiable AI oracle** for prediction markets, 
 4. Anyone can verify AI decision by fetching blob from Walrus
 ```
 
-### 5. User Experience
+### 6. User Experience
 - Responsive design (desktop & mobile)
 - Pixel art retro gaming aesthetics
 - Press Start 2P font for authentic 8-bit feel
@@ -187,6 +194,7 @@ Walmarket is the **world's first verifiable AI oracle** for prediction markets, 
 
 ### Infrastructure
 - **Storage**: Walrus (for verifiable data storage)
+- **Access Control**: Seal (decentralized secrets management for premium content)
 - **AI Oracle**: GPT-5 with custom verification agents
 - **TEE**: Nautilus (Trusted Execution Environment for verifiable AI execution)
 - **Deployment**: Vercel (frontend), SUI Testnet/Mainnet
