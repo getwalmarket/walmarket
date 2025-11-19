@@ -464,23 +464,49 @@ npm run test:integration
 
 ## Roadmap
 
-### Phase 1: PoC (Current)
+### Phase 1: PoC ✅ (Completed)
 - ✅ Basic Seal integration
 - ✅ Premium access NFTs
 - ✅ Simulated encryption
 - ✅ Documentation
+- ✅ Walrus SDK integration (@mysten/walrus)
 
-### Phase 2: MVP
+### Phase 2: MVP (In Progress - ALP-20)
+- ✅ Walrus SDK installed and configured
 - ⏳ Real Seal SDK integration
-- ⏳ Production key servers
+- ⏳ Production key servers setup
 - ⏳ Token-gated subscriptions
-- ⏳ Encrypted Walrus storage
+- ⏳ Encrypted Walrus storage implementation
 
-### Phase 3: Production
+### Phase 3: Production (Planned)
 - ⏳ Enterprise tier features
 - ⏳ Analytics marketplace
 - ⏳ Historical data API
 - ⏳ Revenue distribution
+
+---
+
+## Implementation Notes (ALP-20)
+
+### 2025-11-19: Walrus SDK Integration
+
+**Status**: ✅ Dependencies installed
+
+**Changes**:
+- Installed `@mysten/walrus` package for blob storage operations
+- Prepared for real Walrus upload/download implementation
+- Ready to replace mock functions in `app/lib/seal.ts`
+
+**Next Steps**:
+1. Implement real `uploadToWalrus()` function using WalrusClient
+2. Implement real `fetchFromWalrus()` function
+3. Configure Walrus testnet endpoints in environment variables
+4. Test end-to-end blob upload/download flow
+5. Integrate with Seal encryption pipeline
+
+**Related Issues**:
+- Linear: [ALP-20](https://linear.app/alpsoft/issue/ALP-20/complete-seal-premium-access-control-integration)
+- GitHub: Will be linked via PR
 
 ---
 
