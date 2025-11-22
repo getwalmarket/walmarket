@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Header } from "../../components/Header";
 import { WalletButton } from "../../components/WalletButton";
 import { Footer } from "../../components/Footer";
+import { MarketChart } from "../../components/MarketChart";
 import { useCurrentAccount, useSignAndExecuteTransaction } from "@mysten/dapp-kit";
 import { useUSDTBalance } from "../../hooks/useUSDTBalance";
 import { Transaction } from "@mysten/sui/transactions";
@@ -264,6 +265,9 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
                 </div>
               </div>
             </div>
+
+            {/* Market Chart */}
+            <MarketChart marketId={market.id} />
 
             {/* AI Oracle Resolution */}
             <div className="bg-white p-8 rounded-xl shadow-sm">
