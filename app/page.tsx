@@ -5,7 +5,7 @@ import { Footer } from "./components/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <Header />
 
       {/* Hero Section */}
@@ -21,10 +21,10 @@ export default function Home() {
               className="w-full max-w-3xl h-auto px-4"
             />
           </div>
-          <h2 className="text-xl md:text-2xl font-bold mb-6 text-orange-600 px-4">
+          <h2 className="text-xl md:text-2xl font-bold mb-6 text-orange-600 dark:text-orange-400 px-4">
             Decentralized Truth Through Markets
           </h2>
-          <p className="text-sm md:text-base text-gray-700 max-w-2xl mx-auto mb-10 px-4 leading-relaxed">
+          <p className="text-sm md:text-base text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-10 px-4 leading-relaxed">
             A prediction market platform powered by Walrus and SUI. Where collective intelligence meets blockchain transparency to create verifiable truth.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center px-4 sm:px-0">
@@ -53,26 +53,26 @@ export default function Home() {
 
         {/* Features */}
         <div className="grid md:grid-cols-3 gap-6 mb-16 px-4">
-          <div className="bg-white p-6 border-4 border-orange-400 hover:border-orange-500 transition-all shadow-[4px_4px_0px_0px_rgba(251,146,60,0.4)] hover:shadow-[6px_6px_0px_0px_rgba(251,146,60,0.5)] hover:-translate-y-1">
+          <div className="bg-white dark:bg-gray-800 p-6 border-4 border-orange-400 dark:border-orange-500 hover:border-orange-500 dark:hover:border-orange-400 transition-all shadow-[4px_4px_0px_0px_rgba(251,146,60,0.4)] hover:shadow-[6px_6px_0px_0px_rgba(251,146,60,0.5)] hover:-translate-y-1">
             <div className="text-4xl mb-4">🔮</div>
-            <h3 className="text-lg font-bold mb-3 text-orange-600">Predict the Future</h3>
-            <p className="text-gray-700 text-sm leading-relaxed">
+            <h3 className="text-lg font-bold mb-3 text-orange-600 dark:text-orange-400">Predict the Future</h3>
+            <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
               Create and participate in prediction markets on real-world events. Put your knowledge to work and earn from accurate predictions.
             </p>
           </div>
 
-          <div className="bg-white p-6 border-4 border-orange-400 hover:border-orange-500 transition-all shadow-[4px_4px_0px_0px_rgba(251,146,60,0.4)] hover:shadow-[6px_6px_0px_0px_rgba(251,146,60,0.5)] hover:-translate-y-1">
+          <div className="bg-white dark:bg-gray-800 p-6 border-4 border-orange-400 dark:border-orange-500 hover:border-orange-500 dark:hover:border-orange-400 transition-all shadow-[4px_4px_0px_0px_rgba(251,146,60,0.4)] hover:shadow-[6px_6px_0px_0px_rgba(251,146,60,0.5)] hover:-translate-y-1">
             <div className="text-4xl mb-4">🤖</div>
-            <h3 className="text-lg font-bold mb-3 text-orange-600">AI Oracle Verification</h3>
-            <p className="text-gray-700 text-sm leading-relaxed">
+            <h3 className="text-lg font-bold mb-3 text-orange-600 dark:text-orange-400">AI Oracle Verification</h3>
+            <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
               Advanced AI agents automatically verify market outcomes using real-world data sources, ensuring accurate and unbiased resolution.
             </p>
           </div>
 
-          <div className="bg-white p-6 border-4 border-orange-400 hover:border-orange-500 transition-all shadow-[4px_4px_0px_0px_rgba(251,146,60,0.4)] hover:shadow-[6px_6px_0px_0px_rgba(251,146,60,0.5)] hover:-translate-y-1">
+          <div className="bg-white dark:bg-gray-800 p-6 border-4 border-orange-400 dark:border-orange-500 hover:border-orange-500 dark:hover:border-orange-400 transition-all shadow-[4px_4px_0px_0px_rgba(251,146,60,0.4)] hover:shadow-[6px_6px_0px_0px_rgba(251,146,60,0.5)] hover:-translate-y-1">
             <div className="text-4xl mb-4">💰</div>
-            <h3 className="text-lg font-bold mb-3 text-orange-600">Earn from Accuracy</h3>
-            <p className="text-gray-700 text-sm leading-relaxed">
+            <h3 className="text-lg font-bold mb-3 text-orange-600 dark:text-orange-400">Earn from Accuracy</h3>
+            <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
               Market participants who make accurate predictions earn rewards. Incentivizing truth-seeking through economic mechanisms.
             </p>
           </div>

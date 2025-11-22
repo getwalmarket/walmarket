@@ -79,7 +79,7 @@ const CATEGORIES = ['All', 'Crypto', 'Technology', 'DeFi', 'Politics', 'Infrastr
 
 export default function MarketsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <Header />
 
       <main className="max-w-7xl mx-auto px-6 py-12">
