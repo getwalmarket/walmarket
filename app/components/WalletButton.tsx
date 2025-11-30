@@ -11,15 +11,15 @@ export function WalletButton() {
   return (
     <div className="flex items-center gap-1.5 sm:gap-3">
       {account && (
-        <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-white border-2 border-orange-400 rounded-lg shadow-sm">
+        <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 border-2 border-orange-400 dark:border-orange-500 rounded-lg shadow-sm">
           <div className="flex items-center gap-1.5">
             <Image src="/usdt.png" alt="USDT" width={20} height={20} className="w-5 h-5" />
-            <span className="text-sm font-semibold text-gray-900">
+            <span className="text-sm font-semibold text-gray-900 dark:text-white">
               {isLoading ? '...' : balance.toLocaleString('en-US', { maximumFractionDigits: 2 })}
             </span>
           </div>
-          <div className="h-4 w-px bg-orange-300" />
-          <span className="text-xs text-gray-600">
+          <div className="h-4 w-px bg-orange-300 dark:bg-orange-500" />
+          <span className="text-xs text-gray-600 dark:text-gray-300">
             {account.address.slice(0, 4)}...{account.address.slice(-4)}
           </span>
         </div>

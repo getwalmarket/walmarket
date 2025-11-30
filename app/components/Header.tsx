@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { WalletButton } from "./WalletButton";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
   return (
@@ -37,7 +38,8 @@ export function Header() {
             VALIDATOR
           </Link>
         </nav>
-        <div className="flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <ThemeToggle />
           <WalletButton />
         </div>
       </div>

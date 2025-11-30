@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
+/* Tailwind v4: Enable class-based dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -11,13 +19,6 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-press-start: var(--font-press-start);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
@@ -50,4 +51,40 @@ button,
 [class*="ConnectButton"] *,
 div[class*="wallet"] * {
   font-family: var(--font-press-start), monospace !important;
+}
+
+/* Dark mode styles for dapp-kit dropdown menus */
+.dark [class*="dapp-kit"] [role="menu"],
+.dark [class*="dapp-kit"] [role="listbox"],
+.dark [class*="dapp-kit"] [class*="dropdown"],
+.dark [class*="dapp-kit"] [class*="menu"],
+.dark [class*="dapp-kit"] [class*="popover"],
+.dark [class*="dapp-kit"] [class*="modal"] {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+  color: #f3f4f6 !important;
+}
+
+.dark [class*="dapp-kit"] [role="menuitem"],
+.dark [class*="dapp-kit"] [role="option"],
+.dark [class*="dapp-kit"] button {
+  color: #f3f4f6 !important;
+}
+
+.dark [class*="dapp-kit"] [role="menuitem"]:hover,
+.dark [class*="dapp-kit"] [role="option"]:hover,
+.dark [class*="dapp-kit"] button:hover {
+  background-color: #374151 !important;
+}
+
+/* Ensure dapp-kit dialog/modal backgrounds are dark */
+.dark [class*="dapp-kit"] [class*="overlay"],
+.dark [class*="dapp-kit"] [class*="backdrop"] {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.dark [class*="dapp-kit"] [class*="content"],
+.dark [class*="dapp-kit"] [class*="panel"] {
+  background-color: #1f2937 !important;
+  color: #f3f4f6 !important;
 }
