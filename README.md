@@ -555,6 +555,53 @@ walmarket/
 
 ---
 
+## 🤖 AI Oracle Validator
+
+Walmarket's decentralized truth verification is powered by a network of AI Oracle Validators running Nautilus TEE nodes. Validators stake Walrus tokens and earn rewards for accurate market resolutions.
+
+### What is an AI Oracle Validator?
+
+AI Oracle Validators run GPT-5 inference inside Trusted Execution Environments (TEE), providing cryptographically verifiable market resolutions. They:
+- Execute AI inference in secure enclaves with remote attestation
+- Aggregate data from multiple trusted sources
+- Submit verified reports to the SUI blockchain
+- Earn rewards for accurate and timely resolutions
+
+### Staking Requirements
+
+| Network | WAL Amount | Fiat Value |
+|---------|------------|------------|
+| **Testnet** | 1,000 WAL | Free (faucet) |
+| **Mainnet** | ~2,200,000 WAL | ~500M KRW (~$350,000 USD) |
+
+> **Note**: WAL token price reference: ~$0.16 USD (Nov 2025). Check [CoinMarketCap](https://coinmarketcap.com/currencies/walrus-xyz/) for current prices.
+
+### Quick Start (Testnet)
+
+```bash
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Install Walmarket Oracle CLI
+cargo install walmarket-oracle --version 0.1.0-alpha
+
+# Setup SUI wallet
+sui client new-address ed25519
+sui client switch --env testnet
+sui client faucet
+
+# Initialize and start validator
+walmarket-oracle init --network testnet
+walmarket-oracle register --stake 1000
+walmarket-oracle start --log-level info
+```
+
+> ⚠️ **PoC Warning**: This software is in Proof-of-Concept stage. Use only on **TESTNET**. Not ready for mainnet deployment.
+
+📚 **Full documentation**: [/ai-oracle-validator](https://walmarket.fun/ai-oracle-validator)
+
+---
+
 ## 🎮 Usage Guide
 
 ### For Traders
