@@ -139,7 +139,20 @@ Walmarket is the **world's first verifiable AI oracle** for prediction markets, 
 4. Anyone can verify AI decision by fetching blob from Walrus
 ```
 
-### 6. User Experience
+### 6. x402 Payment Protocol Integration
+- **Micropayment Infrastructure**: Pay-per-action model using USDC stablecoin
+- **Market Creation Fee**: 0.001 USDC to create a new prediction market (anti-spam)
+- **Resolution Fee**: 0.001 USDC to trigger AI oracle resolution
+- **Transparent Pricing**: All fees clearly displayed before transactions
+- **Treasury Management**: x402 fees collected in on-chain treasury for platform sustainability
+
+**x402 Fee Structure:**
+| Action | Fee | Token |
+|--------|-----|-------|
+| Create Market | 0.001 USDC | Circle USDC |
+| Resolve Market | 0.001 USDC | Circle USDC |
+
+### 7. User Experience
 - Responsive design (desktop & mobile)
 - Pixel art retro gaming aesthetics
 - Press Start 2P font for authentic 8-bit feel
@@ -195,9 +208,140 @@ Walmarket is the **world's first verifiable AI oracle** for prediction markets, 
 ### Infrastructure
 - **Storage**: Walrus (for verifiable data storage)
 - **Access Control**: Seal (decentralized secrets management for premium content)
-- **AI Oracle**: GPT-5 with custom verification agents
+- **AI Oracle**: GPT-5-mini with Nautilus TEE verification
 - **TEE**: Nautilus (Trusted Execution Environment for verifiable AI execution)
 - **Deployment**: Vercel (frontend), SUI Testnet/Mainnet
+
+---
+
+## 🔐 Nautilus TEE Integration
+
+Walmarket integrates with [Nautilus](https://docs.sui.io/concepts/cryptography/nautilus), Sui's framework for secure and verifiable off-chain computation using Trusted Execution Environments (TEE).
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Walmarket Frontend                        │
+└─────────────────────────────┬───────────────────────────────────┘
+                              │ POST /api/resolve
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     Next.js API Route                            │
+│                  (app/api/resolve/route.ts)                      │
+└─────────────────────────────┬───────────────────────────────────┘
+                              │
+              ┌───────────────┴───────────────┐
+              ▼                               ▼
+┌──────────────────────────┐    ┌──────────────────────────┐
+│   Nautilus TEE Enclave   │    │    Fallback Mode         │
+│   (AWS Nitro Enclaves)   │    │  (Direct OpenAI API)     │
+├──────────────────────────┤    ├──────────────────────────┤
+│ • Secure enclave exec    │    │ • No TEE attestation     │
+│ • OpenAI API inside TEE  │    │ • Simulated signature    │
+│ • Ed25519 signing        │    │ • Development/testing    │
+│ • Cryptographic proof    │    │                          │
+└──────────────────────────┘    └──────────────────────────┘
+              │                               │
+              └───────────────┬───────────────┘
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Response with TEE Attestation                 │
+│  { outcome, reasoning, tee: { signature, timestamp, verified } } │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### How It Works
+
+1. **Market Resolution Request**: Frontend sends market data to `/api/resolve`
+2. **TEE Execution**: If Nautilus enclave is available:
+   - AI inference runs inside AWS Nitro Enclave
+   - Result is signed with enclave's ephemeral Ed25519 key
+   - Attestation document proves execution integrity
+3. **Fallback Mode**: If enclave unavailable:
+   - Direct OpenAI API call
+   - Simulated signature for development
+4. **On-Chain Verification**: Move smart contracts can verify TEE signatures
+
+### Nautilus Client Library
+
+Located at `app/lib/nautilus.ts`:
+
+```typescript
+import { NautilusTEEClient } from './lib/nautilus';
+
+const client = new NautilusTEEClient();
+
+// Health check
+const health = await client.healthCheck();
+
+// Get attestation for on-chain registration
+const attestation = await client.getAttestation();
+
+// Resolve market with TEE
+const result = await client.resolveMarket(
+  'Will BTC reach $150k?',
+  'Resolution criteria...',
+  'Crypto',
+  1735689600000
+);
+
+// Check if result has valid TEE attestation
+if (NautilusTEEClient.hasValidAttestation(result)) {
+  console.log('Verified by Nautilus TEE');
+}
+```
+
+### Environment Configuration
+
+```env
+# Nautilus Enclave URL (optional - uses fallback if not set)
+NAUTILUS_ENCLAVE_URL=http://your-enclave:3000
+
+# OpenAI API Key (required)
+OPENAI_API_KEY=sk-...
+```
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/resolve` | POST | Execute AI resolution with TEE |
+| `/api/resolve` | GET | Check Nautilus enclave health |
+
+### Response Format
+
+```json
+{
+  "outcome": "yes",
+  "reasoning": "Based on market data...",
+  "model": "gpt-5-mini",
+  "provider": "OpenAI",
+  "tee": {
+    "enclave_url": "http://enclave:3000",
+    "signature": "0xabc123...",
+    "timestamp_ms": 1735689600000,
+    "attestation_available": true,
+    "verified": true
+  }
+}
+```
+
+### Deploying Your Own Enclave
+
+To run with full TEE verification:
+
+1. **Set up AWS Nitro Enclave** following [Nautilus documentation](https://github.com/MystenLabs/nautilus)
+2. **Deploy enclave image** with OpenAI integration
+3. **Register enclave on-chain** with PCR values and public key
+4. **Configure `NAUTILUS_ENCLAVE_URL`** in your environment
+
+### Resources
+
+- [Nautilus Documentation](https://docs.sui.io/concepts/cryptography/nautilus)
+- [Nautilus GitHub](https://github.com/MystenLabs/nautilus)
+- [Nautilus Twitter Example](https://github.com/MystenLabs/nautilus-twitter)
+- [Sui Blog: Tamper-Proof Oracles](https://blog.sui.io/nautilus-tamper-proof-oracles/)
 
 ---
 

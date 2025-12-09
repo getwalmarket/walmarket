@@ -41,6 +41,12 @@ module walmarket::market {
         requires_premium_access: bool,
         /// Seal policy ID for access control (if premium)
         seal_policy_id: vector<u8>,
+        /// AI provider that resolved this market (e.g., "openai", "google", "anthropic")
+        resolver_ai_provider: vector<u8>,
+        /// AI model used for resolution (e.g., "gpt-4o", "gemini-2.0", "claude-opus-4.5")
+        resolver_ai_model: vector<u8>,
+        /// AI reasoning summary (short on-chain summary, full details in Walrus blob)
+        resolver_ai_reasoning: vector<u8>,
     }
 
     /// Position struct representing a user's bet
@@ -67,6 +73,17 @@ module walmarket::market {
         market_ids: Table<u64, address>,
     }
 
+    /// x402 Treasury to collect payments for resolution (generic for any coin type)
+    public struct X402Treasury<phantom T> has key {
+        id: UID,
+        /// Collected payments from x402
+        balance: Balance<T>,
+        /// Admin address for withdrawals
+        admin: address,
+        /// Resolution fee (with coin decimals, e.g., 1000 = 0.001 for 6 decimal coins)
+        resolution_fee: u64,
+    }
+
     // ===== Events =====
 
     public struct MarketCreated has copy, drop {
@@ -89,12 +106,32 @@ module walmarket::market {
         outcome: u8,
         oracle_reporter: address,
         oracle_evidence_blob_id: vector<u8>,
+        ai_provider: vector<u8>,
+        ai_model: vector<u8>,
+        ai_reasoning: vector<u8>,
     }
 
     public struct WinningsClaimed has copy, drop {
         market_id: address,
         user: address,
         payout: u64,
+    }
+
+    /// Event emitted when market is resolved via x402 payment
+    public struct X402ResolutionPaid has copy, drop {
+        market_id: address,
+        payer: address,
+        amount: u64,
+        ai_provider: vector<u8>,
+        ai_model: vector<u8>,
+    }
+
+    /// Event emitted when market is created via x402 payment
+    public struct X402MarketCreated has copy, drop {
+        market_id: address,
+        creator: address,
+        amount: u64,
+        title: vector<u8>,
     }
 
     // ===== Error Codes =====
@@ -108,6 +145,11 @@ module walmarket::market {
     const E_WRONG_MARKET: u64 = 7;
     const E_ALREADY_CLAIMED: u64 = 8;
     const E_INVALID_BLOB_ID: u64 = 9;
+    const E_INSUFFICIENT_PAYMENT: u64 = 10;
+    const E_NOT_ADMIN: u64 = 11;
+
+    /// x402 Resolution fee: 0.001 USDC (1000 with 6 decimals)
+    const X402_RESOLUTION_FEE: u64 = 1000;
 
     // ===== Initialization =====
 
@@ -156,6 +198,9 @@ module walmarket::market {
             encrypted_evidence_blob_id: vector::empty(),
             requires_premium_access: false,
             seal_policy_id: vector::empty(),
+            resolver_ai_provider: vector::empty(),
+            resolver_ai_model: vector::empty(),
+            resolver_ai_reasoning: vector::empty(),
         };
 
         // Track market in registry
@@ -215,11 +260,14 @@ module walmarket::market {
     }
 
     /// Resolve a market with oracle evidence stored on Walrus
-    /// Supports both public and Seal-encrypted evidence
+    /// Includes AI agent information for transparency
     public entry fun resolve_market(
         market: &mut Market,
         outcome: u8, // 1 = YES, 2 = NO
         oracle_evidence_blob_id: vector<u8>, // Public outcome blob ID
+        ai_provider: vector<u8>, // e.g., "openai", "google", "anthropic"
+        ai_model: vector<u8>, // e.g., "gpt-4o", "gemini-2.0", "claude-opus-4.5"
+        ai_reasoning: vector<u8>, // Short reasoning summary
         ctx: &mut TxContext
     ) {
         // Only creator can resolve for now (TODO: add TEE oracle verification)
@@ -232,12 +280,18 @@ module walmarket::market {
         market.outcome = outcome;
         market.oracle_evidence_blob_id = oracle_evidence_blob_id;
         market.oracle_reporter = tx_context::sender(ctx);
+        market.resolver_ai_provider = ai_provider;
+        market.resolver_ai_model = ai_model;
+        market.resolver_ai_reasoning = ai_reasoning;
 
         event::emit(MarketResolved {
             market_id: object::uid_to_address(&market.id),
             outcome,
             oracle_reporter: market.oracle_reporter,
             oracle_evidence_blob_id: market.oracle_evidence_blob_id,
+            ai_provider: market.resolver_ai_provider,
+            ai_model: market.resolver_ai_model,
+            ai_reasoning: market.resolver_ai_reasoning,
         });
     }
 
@@ -249,6 +303,9 @@ module walmarket::market {
         public_outcome_blob_id: vector<u8>, // Public outcome only
         encrypted_evidence_blob_id: vector<u8>, // Seal-encrypted full evidence
         seal_policy_id: vector<u8>, // Seal policy for access control
+        ai_provider: vector<u8>, // e.g., "openai", "google", "anthropic"
+        ai_model: vector<u8>, // e.g., "gpt-4o", "gemini-2.0", "claude-opus-4.5"
+        ai_reasoning: vector<u8>, // Short reasoning summary (public)
         ctx: &mut TxContext
     ) {
         // Only creator can resolve (TODO: add TEE oracle verification)
@@ -266,13 +323,189 @@ module walmarket::market {
         market.oracle_reporter = tx_context::sender(ctx);
         market.requires_premium_access = true;
         market.seal_policy_id = seal_policy_id;
+        market.resolver_ai_provider = ai_provider;
+        market.resolver_ai_model = ai_model;
+        market.resolver_ai_reasoning = ai_reasoning;
 
         event::emit(MarketResolved {
             market_id: object::uid_to_address(&market.id),
             outcome,
             oracle_reporter: market.oracle_reporter,
             oracle_evidence_blob_id: market.oracle_evidence_blob_id,
+            ai_provider: market.resolver_ai_provider,
+            ai_model: market.resolver_ai_model,
+            ai_reasoning: market.resolver_ai_reasoning,
         });
+    }
+
+    // ===== x402 Payment Functions =====
+
+    /// Create a new prediction market with x402 USDC payment
+    /// Anyone can create a market by paying the creation fee
+    public entry fun create_market_x402<T>(
+        registry: &mut MarketRegistry,
+        treasury: &mut X402Treasury<T>,
+        payment: Coin<T>,
+        title: vector<u8>,
+        description: vector<u8>,
+        category: vector<u8>,
+        end_date: u64,
+        walrus_blob_id: vector<u8>,
+        ctx: &mut TxContext
+    ) {
+        // Validate blob ID is not empty
+        assert!(vector::length(&walrus_blob_id) > 0, E_INVALID_BLOB_ID);
+
+        // Verify payment amount meets minimum fee
+        let payment_amount = coin::value(&payment);
+        assert!(payment_amount >= treasury.resolution_fee, E_INSUFFICIENT_PAYMENT);
+
+        // Collect payment to treasury
+        let payment_balance = coin::into_balance(payment);
+        balance::join(&mut treasury.balance, payment_balance);
+
+        let market_id = object::new(ctx);
+        let market_address = object::uid_to_address(&market_id);
+
+        let market = Market {
+            id: market_id,
+            title,
+            description,
+            category,
+            end_date,
+            yes_pool: balance::zero(),
+            no_pool: balance::zero(),
+            creator: tx_context::sender(ctx),
+            status: 0, // Active
+            outcome: 0, // Pending
+            walrus_metadata_blob_id: walrus_blob_id,
+            oracle_evidence_blob_id: vector::empty(),
+            oracle_reporter: @0x0,
+            encrypted_evidence_blob_id: vector::empty(),
+            requires_premium_access: false,
+            seal_policy_id: vector::empty(),
+            resolver_ai_provider: vector::empty(),
+            resolver_ai_model: vector::empty(),
+            resolver_ai_reasoning: vector::empty(),
+        };
+
+        // Track market in registry
+        table::add(&mut registry.market_ids, registry.market_count, market_address);
+        registry.market_count = registry.market_count + 1;
+
+        // Emit x402 payment event
+        event::emit(X402MarketCreated {
+            market_id: market_address,
+            creator: tx_context::sender(ctx),
+            amount: payment_amount,
+            title: market.title,
+        });
+
+        event::emit(MarketCreated {
+            market_id: market_address,
+            creator: tx_context::sender(ctx),
+            title: market.title,
+            end_date,
+            walrus_blob_id: market.walrus_metadata_blob_id,
+        });
+
+        transfer::share_object(market);
+    }
+
+    /// Create a new x402 Treasury for collecting resolution payments
+    /// This should be called once after deployment with the payment coin type
+    public entry fun create_x402_treasury<T>(
+        resolution_fee: u64,
+        ctx: &mut TxContext
+    ) {
+        let treasury = X402Treasury<T> {
+            id: object::new(ctx),
+            balance: balance::zero<T>(),
+            admin: tx_context::sender(ctx),
+            resolution_fee,
+        };
+        transfer::share_object(treasury);
+    }
+
+    /// Resolve market with x402 USDC payment - anyone can call this
+    /// Requires payment of resolution_fee to the treasury
+    public entry fun resolve_market_x402<T>(
+        market: &mut Market,
+        treasury: &mut X402Treasury<T>,
+        payment: Coin<T>,
+        outcome: u8, // 1 = YES, 2 = NO
+        oracle_evidence_blob_id: vector<u8>,
+        ai_provider: vector<u8>,
+        ai_model: vector<u8>,
+        ai_reasoning: vector<u8>,
+        ctx: &mut TxContext
+    ) {
+        // Verify market is still active
+        assert!(market.status == 0, E_MARKET_ALREADY_RESOLVED);
+        assert!(outcome == 1 || outcome == 2, E_INVALID_OUTCOME);
+        assert!(vector::length(&oracle_evidence_blob_id) > 0, E_INVALID_BLOB_ID);
+
+        // Verify payment amount meets minimum fee
+        let payment_amount = coin::value(&payment);
+        assert!(payment_amount >= treasury.resolution_fee, E_INSUFFICIENT_PAYMENT);
+
+        // Collect payment to treasury
+        let payment_balance = coin::into_balance(payment);
+        balance::join(&mut treasury.balance, payment_balance);
+
+        // Emit x402 payment event
+        event::emit(X402ResolutionPaid {
+            market_id: object::uid_to_address(&market.id),
+            payer: tx_context::sender(ctx),
+            amount: payment_amount,
+            ai_provider,
+            ai_model,
+        });
+
+        // Update market with resolution
+        market.status = outcome;
+        market.outcome = outcome;
+        market.oracle_evidence_blob_id = oracle_evidence_blob_id;
+        market.oracle_reporter = tx_context::sender(ctx);
+        market.resolver_ai_provider = ai_provider;
+        market.resolver_ai_model = ai_model;
+        market.resolver_ai_reasoning = ai_reasoning;
+
+        event::emit(MarketResolved {
+            market_id: object::uid_to_address(&market.id),
+            outcome,
+            oracle_reporter: market.oracle_reporter,
+            oracle_evidence_blob_id: market.oracle_evidence_blob_id,
+            ai_provider: market.resolver_ai_provider,
+            ai_model: market.resolver_ai_model,
+            ai_reasoning: market.resolver_ai_reasoning,
+        });
+    }
+
+    /// Admin function to withdraw collected fees from treasury
+    public entry fun withdraw_treasury<T>(
+        treasury: &mut X402Treasury<T>,
+        recipient: address,
+        ctx: &mut TxContext
+    ) {
+        assert!(tx_context::sender(ctx) == treasury.admin, E_NOT_ADMIN);
+
+        let amount = balance::value(&treasury.balance);
+        if (amount > 0) {
+            let withdrawn = balance::split(&mut treasury.balance, amount);
+            let coin = coin::from_balance(withdrawn, ctx);
+            transfer::public_transfer(coin, recipient);
+        }
+    }
+
+    /// Get treasury balance
+    public fun get_treasury_balance<T>(treasury: &X402Treasury<T>): u64 {
+        balance::value(&treasury.balance)
+    }
+
+    /// Get treasury resolution fee
+    public fun get_resolution_fee<T>(treasury: &X402Treasury<T>): u64 {
+        treasury.resolution_fee
     }
 
     /// Claim winnings from a resolved market
@@ -375,5 +608,17 @@ module walmarket::market {
 
     public fun get_seal_policy_id(market: &Market): vector<u8> {
         market.seal_policy_id
+    }
+
+    public fun get_resolver_ai_provider(market: &Market): vector<u8> {
+        market.resolver_ai_provider
+    }
+
+    public fun get_resolver_ai_model(market: &Market): vector<u8> {
+        market.resolver_ai_model
+    }
+
+    public fun get_resolver_ai_reasoning(market: &Market): vector<u8> {
+        market.resolver_ai_reasoning
     }
 }
