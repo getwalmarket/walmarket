@@ -26,6 +26,12 @@ export function Header() {
         </div>
         <nav className="hidden md:flex items-center gap-4">
           <Link
+            href="/markets"
+            className="px-3 py-2 text-[0.6rem] font-[family-name:var(--font-press-start)] text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+          >
+            MARKETS
+          </Link>
+          <Link
             href="/how-it-works"
             className="px-3 py-2 text-[0.6rem] font-[family-name:var(--font-press-start)] text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
           >
