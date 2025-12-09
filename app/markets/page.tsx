@@ -59,6 +59,7 @@ export default function MarketsPage() {
     reasoning: string;
     txDigest: string;
   } | null>(null);
+  const [selectedMarket, setSelectedMarket] = useState<MarketData | null>(null);
 
   useEffect(() => {
     fetchMarkets();
@@ -79,7 +80,7 @@ export default function MarketsPage() {
         order: 'descending'
       });
 
-      const marketIds = response.data.map((event: { parsedJson?: { market_id?: string } }) => event.parsedJson?.market_id).filter(Boolean);
+      const marketIds = response.data.map((event) => (event.parsedJson as { market_id?: string })?.market_id).filter(Boolean) as string[];
 
       const marketPromises = marketIds.map(async (marketId: string) => {
         try {
@@ -292,6 +293,126 @@ export default function MarketsPage() {
         </div>
       )}
 
+      {/* Market Detail Modal */}
+      {selectedMarket && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedMarket(null)}>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Header with Status */}
+            <div className={`px-6 py-4 ${
+              selectedMarket.status !== 0
+                ? selectedMarket.outcome === 1
+                  ? 'bg-green-500'
+                  : 'bg-red-500'
+                : isReadyToResolve(selectedMarket)
+                  ? 'bg-yellow-500'
+                  : 'bg-blue-500'
+            } text-white rounded-t-2xl`}>
+              <div className="flex items-center justify-between">
+                <span className="text-lg font-bold">
+                  {selectedMarket.status !== 0
+                    ? selectedMarket.outcome === 1 ? 'RESOLVED: YES' : 'RESOLVED: NO'
+                    : isReadyToResolve(selectedMarket)
+                      ? 'READY TO RESOLVE'
+                      : 'ACTIVE'}
+                </span>
+                <span className="text-sm opacity-90 bg-white/20 px-3 py-1 rounded-full">{selectedMarket.category || 'General'}</span>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                {selectedMarket.title}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                {selectedMarket.description}
+              </p>
+
+              {/* Market Info */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">End Date</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">{formatDate(selectedMarket.endDate)}</div>
+                </div>
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Creator</div>
+                  <div className="font-mono text-sm text-gray-900 dark:text-white">
+                    {selectedMarket.creator.slice(0, 8)}...{selectedMarket.creator.slice(-6)}
+                  </div>
+                </div>
+              </div>
+
+              {/* AI Resolution Info (if resolved) */}
+              {selectedMarket.status !== 0 && selectedMarket.resolverAiModel && (
+                <div className="bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700 rounded-lg p-4 mb-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-purple-700 dark:text-purple-300 font-semibold">
+                      AI Resolution ({selectedMarket.resolverAiProvider} / {selectedMarket.resolverAiModel})
+                    </span>
+                  </div>
+                  {selectedMarket.resolverAiReasoning && (
+                    <p className="text-purple-600 dark:text-purple-400 text-sm">
+                      {selectedMarket.resolverAiReasoning}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex flex-col gap-3">
+                {/* AI Resolve Button (only if ready to resolve) */}
+                {isReadyToResolve(selectedMarket) && (
+                  <button
+                    onClick={() => {
+                      const market = selectedMarket;
+                      setSelectedMarket(null);
+                      handleResolveMarket(market, { preventDefault: () => {}, stopPropagation: () => {} } as React.MouseEvent);
+                    }}
+                    disabled={resolvingMarketId === selectedMarket.id || !account}
+                    className="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                  >
+                    {resolvingMarketId === selectedMarket.id ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        AI Resolving...
+                      </>
+                    ) : (
+                      <>
+                        <span>🤖</span>
+                        Resolve with AI (0.001 USDC)
+                      </>
+                    )}
+                  </button>
+                )}
+
+                <Link
+                  href={`/markets/${selectedMarket.id}`}
+                  className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold text-center transition-colors"
+                >
+                  View Full Details
+                </Link>
+
+                <a
+                  href={`https://suiscan.xyz/testnet/object/${selectedMarket.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold text-center transition-colors"
+                >
+                  View on Suiscan
+                </a>
+
+                <button
+                  onClick={() => setSelectedMarket(null)}
+                  className="w-full py-3 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white rounded-lg font-semibold transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="max-w-7xl mx-auto px-6 py-12">
         {/* Page Header */}
         <div className="mb-8">
@@ -402,11 +523,16 @@ export default function MarketsPage() {
                   </div>
                 </div>
 
-                <Link href={`/markets/${market.id}`} className="flex-1 p-5">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+                <div
+                  onClick={() => setSelectedMarket(market)}
+                  className="flex-1 p-5 cursor-pointer flex flex-col min-h-[200px]"
+                >
+                  {/* Title - fixed height for 2 lines */}
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 h-14 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
                     {market.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">
+                  {/* Description - fixed height for 3 lines */}
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3 h-[60px]">
                     {market.description}
                   </p>
 
@@ -426,14 +552,14 @@ export default function MarketsPage() {
                     </div>
                   )}
 
-                  {/* End Date */}
-                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                  {/* End Date - at bottom */}
+                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mt-auto">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span>{formatDate(market.endDate)}</span>
                   </div>
-                </Link>
+                </div>
 
                 {/* Resolve Button - Only show for markets ready to resolve */}
                 {isReadyToResolve(market) && (

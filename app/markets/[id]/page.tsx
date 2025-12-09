@@ -404,7 +404,7 @@ export default function MarketDetailPage({ params }: { params: Promise<{ id: str
 
                     <button
                       onClick={handlePlaceBet}
-                      disabled={!selectedOutcome || !betAmount || isPlacingBet}
+                      disabled={!selectedOutcome || !betAmount}
                       className="w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg font-semibold disabled:opacity-50"
                     >
                       Place Bet
