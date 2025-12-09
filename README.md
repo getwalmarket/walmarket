@@ -139,7 +139,20 @@ Walmarket is the **world's first verifiable AI oracle** for prediction markets, 
 4. Anyone can verify AI decision by fetching blob from Walrus
 ```
 
-### 6. User Experience
+### 6. x402 Payment Protocol Integration
+- **Micropayment Infrastructure**: Pay-per-action model using USDC stablecoin
+- **Market Creation Fee**: 0.001 USDC to create a new prediction market (anti-spam)
+- **Resolution Fee**: 0.001 USDC to trigger AI oracle resolution
+- **Transparent Pricing**: All fees clearly displayed before transactions
+- **Treasury Management**: x402 fees collected in on-chain treasury for platform sustainability
+
+**x402 Fee Structure:**
+| Action | Fee | Token |
+|--------|-----|-------|
+| Create Market | 0.001 USDC | Circle USDC |
+| Resolve Market | 0.001 USDC | Circle USDC |
+
+### 7. User Experience
 - Responsive design (desktop & mobile)
 - Pixel art retro gaming aesthetics
 - Press Start 2P font for authentic 8-bit feel
