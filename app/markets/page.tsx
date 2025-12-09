@@ -1,7 +1,6 @@
 'use client';
 
 import Link from "next/link";
-import Image from "next/image";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { useState, useEffect } from "react";
@@ -225,8 +224,7 @@ export default function MarketsPage() {
     return categoryMatch && statusMatch;
   });
 
-  // Calculate stats
-  const totalVolume = markets.reduce((sum, m) => sum + m.yesPool + m.noPool, 0);
+  // Calculate stats for filter counts
   const activeMarkets = markets.filter(m => m.status === 0 && !isReadyToResolve(m)).length;
   const resolvedMarkets = markets.filter(m => m.status !== 0).length;
   const readyToResolveMarkets = markets.filter(m => isReadyToResolve(m)).length;
@@ -237,19 +235,6 @@ export default function MarketsPage() {
       month: 'short',
       day: 'numeric'
     });
-  };
-
-  const getStatusBadge = (market: MarketData) => {
-    if (market.status === 0) {
-      if (isReadyToResolve(market)) {
-        return <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">Ready to Resolve</span>;
-      }
-      return <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">Active</span>;
-    } else if (market.status === 1 || market.outcome === 1) {
-      return <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Resolved: YES</span>;
-    } else {
-      return <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">Resolved: NO</span>;
-    }
   };
 
   return (
@@ -353,33 +338,7 @@ export default function MarketsPage() {
           ))}
         </div>
 
-        {/* Stats Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border-2 border-orange-200 dark:border-orange-800">
-            <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Markets</div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{markets.length}</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border-2 border-blue-200 dark:border-blue-800">
-            <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Active</div>
-            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{activeMarkets}</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border-2 border-yellow-200 dark:border-yellow-800">
-            <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Ready to Resolve</div>
-            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{readyToResolveMarkets}</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border-2 border-green-200 dark:border-green-800">
-            <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Resolved</div>
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400">{resolvedMarkets}</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border-2 border-orange-200 dark:border-orange-800">
-            <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Volume</div>
-            <div className="flex items-center gap-2">
-              <Image src="/usdt.png" alt="USDT" width={24} height={24} className="w-6 h-6" />
-              <div className="text-2xl font-bold text-gray-900 dark:text-white">{totalVolume.toLocaleString()}</div>
-            </div>
-          </div>
-        </div>
-
+        
         {/* Loading State */}
         {loading && (
           <div className="text-center py-20">
@@ -415,109 +374,87 @@ export default function MarketsPage() {
 
         {/* Markets Grid */}
         {!loading && !error && filteredMarkets.length > 0 && (
-          <div className="grid gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredMarkets.map((market) => (
               <div
                 key={market.id}
-                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-lg transition-all border border-gray-100 dark:border-gray-700 hover:border-orange-200 dark:hover:border-orange-700"
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all border border-gray-100 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-600 overflow-hidden flex flex-col"
               >
-                <Link href={`/markets/${market.id}`}>
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2 flex-wrap">
-                        <span className="px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 text-sm font-medium rounded-full">
-                          {market.category || 'General'}
-                        </span>
-                        {getStatusBadge(market)}
-                        {market.resolverAiModel && (
-                          <span className="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 text-xs font-medium rounded-full">
-                            AI: {market.resolverAiModel}
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{market.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-400">{market.description}</p>
-                    </div>
+                {/* Card Header with Status */}
+                <div className={`px-4 py-3 ${
+                  market.status !== 0
+                    ? market.outcome === 1
+                      ? 'bg-green-500'
+                      : 'bg-red-500'
+                    : isReadyToResolve(market)
+                      ? 'bg-yellow-500'
+                      : 'bg-blue-500'
+                } text-white`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold">
+                      {market.status !== 0
+                        ? market.outcome === 1 ? 'RESOLVED: YES' : 'RESOLVED: NO'
+                        : isReadyToResolve(market)
+                          ? 'READY TO RESOLVE'
+                          : 'ACTIVE'}
+                    </span>
+                    <span className="text-xs opacity-90">{market.category || 'General'}</span>
                   </div>
+                </div>
+
+                <Link href={`/markets/${market.id}`} className="flex-1 p-5">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+                    {market.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">
+                    {market.description}
+                  </p>
 
                   {/* AI Resolution Info */}
-                  {market.status !== 0 && market.resolverAiReasoning && (
-                    <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4 mb-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-purple-700 dark:text-purple-300 font-medium text-sm">
-                          AI Resolution ({market.resolverAiProvider} / {market.resolverAiModel})
+                  {market.status !== 0 && market.resolverAiModel && (
+                    <div className="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-3 mb-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">
+                          AI: {market.resolverAiModel}
                         </span>
                       </div>
-                      <p className="text-purple-600 dark:text-purple-400 text-sm line-clamp-2">
-                        {market.resolverAiReasoning}
-                      </p>
+                      {market.resolverAiReasoning && (
+                        <p className="text-purple-700 dark:text-purple-300 text-xs line-clamp-2">
+                          {market.resolverAiReasoning}
+                        </p>
+                      )}
                     </div>
                   )}
 
-                  <div className="pt-4 border-t dark:border-gray-700 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex gap-6">
-                        <div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">YES Pool</div>
-                          <div className="flex items-center gap-1.5">
-                            <Image src="/usdt.png" alt="USDT" width={20} height={20} className="w-5 h-5" />
-                            <div className="text-lg font-semibold text-green-600 dark:text-green-400">
-                              {market.yesPool.toLocaleString()}
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">NO Pool</div>
-                          <div className="flex items-center gap-1.5">
-                            <Image src="/usdt.png" alt="USDT" width={20} height={20} className="w-5 h-5" />
-                            <div className="text-lg font-semibold text-red-600 dark:text-red-400">
-                              {market.noPool.toLocaleString()}
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Total</div>
-                          <div className="flex items-center gap-1.5">
-                            <Image src="/usdt.png" alt="USDT" width={20} height={20} className="w-5 h-5" />
-                            <div className="text-lg font-semibold text-gray-900 dark:text-white">
-                              {(market.yesPool + market.noPool).toLocaleString()}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">End Date</div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
-                          {formatDate(market.endDate)}
-                        </div>
-                      </div>
-                    </div>
+                  {/* End Date */}
+                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>{formatDate(market.endDate)}</span>
                   </div>
                 </Link>
 
                 {/* Resolve Button - Only show for markets ready to resolve */}
                 {isReadyToResolve(market) && (
-                  <div className="mt-4 pt-4 border-t dark:border-gray-700">
+                  <div className="px-5 pb-5">
                     <button
                       onClick={(e) => handleResolveMarket(market, e)}
                       disabled={resolvingMarketId === market.id || !account}
-                      className="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                      className="w-full py-2.5 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg font-semibold text-sm hover:from-purple-600 hover:to-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
                     >
                       {resolvingMarketId === market.id ? (
                         <>
-                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          AI Resolving...
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Resolving...
                         </>
                       ) : (
                         <>
                           <span>🤖</span>
-                          Resolve with AI (0.001 USDC)
+                          Resolve with AI
                         </>
                       )}
                     </button>
-                    {!account && (
-                      <p className="text-xs text-center text-gray-500 mt-2">Connect wallet to resolve</p>
-                    )}
                   </div>
                 )}
               </div>
