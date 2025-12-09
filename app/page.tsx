@@ -110,6 +110,36 @@ export default function Home() {
           </p>
         </div>
 
+        {/* x402 Payment Protocol */}
+        <div className="bg-gradient-to-r from-emerald-500 to-green-600 p-8 mx-4 mb-12 border-4 border-green-700 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)] text-white">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="text-4xl">💳</div>
+            <h3 className="text-xl md:text-2xl font-bold">Micropayments via x402 Protocol</h3>
+          </div>
+          <p className="mb-4 text-sm md:text-base">
+            Walmarket integrates the x402 payment protocol for seamless USDC micropayments on Base network:
+          </p>
+          <div className="grid md:grid-cols-3 gap-4 mb-4">
+            <div className="bg-white/10 p-4 rounded border-2 border-white/30">
+              <h4 className="font-bold mb-2 text-sm">⚡ Instant Payments</h4>
+              <p className="text-xs opacity-90">Pay-per-use model with 0.001 USDC per market creation and AI resolution</p>
+            </div>
+            <div className="bg-white/10 p-4 rounded border-2 border-white/30">
+              <h4 className="font-bold mb-2 text-sm">🔗 HTTP Native</h4>
+              <p className="text-xs opacity-90">402 Payment Required status enables web-native crypto payments</p>
+            </div>
+            <div className="bg-white/10 p-4 rounded border-2 border-white/30">
+              <h4 className="font-bold mb-2 text-sm">🛡️ Base + USDC</h4>
+              <p className="text-xs opacity-90">Leverages Base L2 for low fees and USDC for stable value</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 text-xs md:text-sm">
+            <span className="bg-white/20 px-3 py-1 rounded-full">Coinbase Commerce</span>
+            <span className="bg-white/20 px-3 py-1 rounded-full">EIP-712 Signatures</span>
+            <span className="bg-white/20 px-3 py-1 rounded-full">Sub-cent Transactions</span>
+          </div>
+        </div>
+
         {/* Become a Validator CTA */}
         <div className="bg-gradient-to-r from-purple-600 to-indigo-700 p-8 mx-4 mb-12 border-4 border-indigo-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)] text-white">
           <div className="flex flex-col md:flex-row items-center gap-6">
