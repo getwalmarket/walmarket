@@ -58,6 +58,13 @@ export default function MarketsPage() {
     outcome: string;
     reasoning: string;
     txDigest: string;
+    tee?: {
+      enclave_url: string;
+      signature: string;
+      timestamp_ms: number;
+      attestation_available: boolean;
+      verified: boolean;
+    };
   } | null>(null);
   const [selectedMarket, setSelectedMarket] = useState<MarketData | null>(null);
 
@@ -129,8 +136,18 @@ export default function MarketsPage() {
     return market.status === 0 && Date.now() >= market.endDate;
   };
 
-  // Call OpenAI GPT to get resolution
-  async function getAIResolution(market: MarketData): Promise<{ outcome: 'yes' | 'no', reasoning: string }> {
+  // Call AI Oracle with Nautilus TEE for resolution
+  async function getAIResolution(market: MarketData): Promise<{
+    outcome: 'yes' | 'no';
+    reasoning: string;
+    tee?: {
+      enclave_url: string;
+      signature: string;
+      timestamp_ms: number;
+      attestation_available: boolean;
+      verified: boolean;
+    };
+  }> {
     const response = await fetch('/api/resolve', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -204,6 +221,7 @@ export default function MarketsPage() {
         outcome: aiResult.outcome,
         reasoning: aiResult.reasoning,
         txDigest: result.digest,
+        tee: aiResult.tee,
       });
       fetchMarkets();
     } catch (err: unknown) {
@@ -262,10 +280,52 @@ export default function MarketsPage() {
               </p>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-4">
               <h4 className="font-semibold text-gray-900 dark:text-white mb-2">AI Reasoning:</h4>
               <p className="text-gray-700 dark:text-gray-300 text-sm">{resolveResult.reasoning}</p>
             </div>
+
+            {/* TEE Attestation Info */}
+            {resolveResult.tee && (
+              <div className={`rounded-lg p-4 mb-6 ${
+                resolveResult.tee.attestation_available
+                  ? 'bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800'
+                  : 'bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800'
+              }`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className={`text-lg ${
+                    resolveResult.tee.attestation_available ? 'text-green-600' : 'text-yellow-600'
+                  }`}>
+                    {resolveResult.tee.attestation_available ? '🔐' : '⚠️'}
+                  </span>
+                  <h4 className={`font-semibold ${
+                    resolveResult.tee.attestation_available
+                      ? 'text-green-800 dark:text-green-200'
+                      : 'text-yellow-800 dark:text-yellow-200'
+                  }`}>
+                    {resolveResult.tee.attestation_available
+                      ? 'Nautilus TEE Verified'
+                      : 'Fallback Mode (No TEE)'}
+                  </h4>
+                </div>
+                <div className="text-xs space-y-1">
+                  <p className="text-gray-600 dark:text-gray-400">
+                    <span className="font-medium">Enclave:</span>{' '}
+                    {resolveResult.tee.enclave_url === 'fallback-mode'
+                      ? 'Not Available'
+                      : resolveResult.tee.enclave_url}
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    <span className="font-medium">Signature:</span>{' '}
+                    <span className="font-mono">{resolveResult.tee.signature.slice(0, 16)}...{resolveResult.tee.signature.slice(-8)}</span>
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    <span className="font-medium">Timestamp:</span>{' '}
+                    {new Date(resolveResult.tee.timestamp_ms).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div className="flex flex-col gap-3">
               <a
